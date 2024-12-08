@@ -1,6 +1,6 @@
 <template>
   <NuxtPage />
-  <TheFooter/>
+  <TheFooter />
 </template>
 
 <script setup lang="ts">
@@ -16,6 +16,5 @@ useHead({
 * {
   font-family: "Koho", "Inter", sans-serif;
   scroll-behavior: smooth;
-
 }
 </style>

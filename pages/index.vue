@@ -46,28 +46,28 @@
     <!--
          ---------------- Zone d'intervention
        -->
-       <section
-         class="text-center bg-secondary text-secondary-content h-screen md:h-[50vh]"
-       >
-         <div class="flex flex-col md:flex-row h-full">
-           <div class="flex flex-col gap-8 p-4 flex-1 items-center justify-center">
-             <h2 class="uppercase text-xl text-primary font-medium">
-               Nous intervenons dans votre secteur
-             </h2>
-             <ul class="uppercase text-xl list-none">
-               <li>Montpellier Centre</li>
-               <li>Montpellier Est</li>
-               <li>Castelnau-le-Lez</li>
-               <li>Jacou</li>
-               <li>Clapiers</li>
-               <li>Le Crès</li>
-               <!-- <li>Montferrier-sur-Lez</li> -->
-               <!-- <li>Prades-le-Lez</li> -->
-             </ul>
-           </div>
-           <!-- <div class="bg-slate-400 h-full flex-1">ICI UNE CARTE</div> -->
-         </div>
-       </section>
+    <section
+      class="text-center bg-secondary text-secondary-content h-screen md:h-[50vh]"
+    >
+      <div class="flex flex-col md:flex-row h-full">
+        <div class="flex flex-col gap-8 p-4 flex-1 items-center justify-center">
+          <h2 class="uppercase text-xl text-primary font-medium">
+            Nous intervenons dans votre secteur
+          </h2>
+          <ul class="uppercase text-xl list-none">
+            <li>Montpellier Centre</li>
+            <li>Montpellier Est</li>
+            <li>Castelnau-le-Lez</li>
+            <li>Jacou</li>
+            <li>Clapiers</li>
+            <li>Le Crès</li>
+            <!-- <li>Montferrier-sur-Lez</li> -->
+            <!-- <li>Prades-le-Lez</li> -->
+          </ul>
+        </div>
+        <!-- <div class="bg-slate-400 h-full flex-1">ICI UNE CARTE</div> -->
+      </div>
+    </section>
     <!--
       ---------------- Contact
     -->
@@ -81,43 +81,21 @@
         <p class="uppercase text-md">
           N'hésitez pas à nous contacter pour toute demande d'information !
         </p>
-        <form class="flex flex-col gap-4 w-full">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text text-base-content">Votre nom</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Nom"
-              class="input input-bordered text-secondary w-full"
-            />
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text text-base-content">Votre email</span>
-            </label>
-            <input
-              type="email"
-              placeholder="Email"
-              class="input input-bordered text-secondary w-full"
-            />
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text text-base-content">Votre message</span>
-            </label>
-            <textarea
-              class="textarea textarea-bordered text-secondary h-24"
-              placeholder="Message"
-            ></textarea>
-          </div>
-          <button class="btn btn-primary uppercase">Envoyer</button>
-        </form>
+        <NuxtLink :to="onSubmitMessage()" class="btn btn-primary uppercase"
+          >Nous écrire</NuxtLink
+        >
       </div>
     </section>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const EMAIL = ref("contact@maxivitre.fr");
 
+function onSubmitMessage() {
+  let message = encodeURIComponent("J'ai une question !");
+
+  return `mailto:${EMAIL.value}?subject=${message}`;
+}
+</script>
 <style scoped></style>

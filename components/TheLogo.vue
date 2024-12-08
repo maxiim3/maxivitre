@@ -15,3 +15,18 @@
     />
   </svg>
 </template>
+<script setup lang='ts'>
+/**
+ * A reusable data table component with sorting and filtering capabilities
+ * @component DataTable
+ * @example
+ * <template>
+ *   <DataTable
+ *     :data="users"
+ *     :columns="columns"
+ *     @row-click="handleRowClick"
+ *   />
+ * </template>
+ */
+ defineProps()
+ </script>

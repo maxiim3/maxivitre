@@ -1,7 +1,7 @@
 <template>
   <footer class="footer footer-center bg-secondary text-secondary-content p-10">
     <aside>
-      <TheLogo class="w-12 h-12 fill-white" />
+      <TheLogoRounded class="w-12 h-12 fill-white" />
       <p class="font-bold">
         MAXIVITRE
         <br />
@@ -35,7 +35,7 @@
           </svg>
         </a>
         <a
-          href="https://instagram.com/maxivitre"
+          href="https://instagram.com/maxivitre_pro"
           target="_blank"
           rel="noopener noreferrer"
         >
