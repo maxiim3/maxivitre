@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 // import { XMarkIcon } from '@heroicons/vue/24/outline'
-import type { WindowType } from '~/types/window'
+import type { WindowType } from '~/types/Windows.types'
 
 const props = defineProps<{
   isOpen: boolean

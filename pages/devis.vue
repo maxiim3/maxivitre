@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import type { WindowType, WindowSelection } from "~/types/window";
+import type { WindowType, WindowSelection } from "~/types/Windows.types";
 
 const isDrawerOpen = ref(false);
 const selectedWindows = ref<WindowSelection[]>([]);

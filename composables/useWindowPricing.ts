@@ -1,5 +1,5 @@
-import { DIRTINESS_LEVELS } from '~/types/window'
-import type { WindowSelection } from '~/types/window'
+import { DIRTINESS_LEVELS } from '~/types/Windows.types'
+import type { WindowSelection } from '~/types/Windows.types'
 
 export const useWindowPricing = () => {
   const getDirtinessMultiplier = (level: number) => {
@@ -27,7 +27,7 @@ export const useWindowPricing = () => {
 
   const calculateTotalPrice = (window: WindowSelection) => {
     if (!window) return '0.00'
-    
+
     const basePrice = window.basePrice ?? 0
     const quantity = window.quantity ?? 1
     const dirtiness = window.dirtiness ?? 0
@@ -38,7 +38,7 @@ export const useWindowPricing = () => {
     const glueCost = calculateGlueCost(gluePercentage)
     const heightCost = calculateHeightCost(height)
     const pricePerWindow = baseWithMultiplier + glueCost + heightCost
-    
+
     return (pricePerWindow * quantity).toFixed(2)
   }
 
