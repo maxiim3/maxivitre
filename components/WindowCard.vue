@@ -110,8 +110,8 @@
 
 <script setup lang="ts">
 // import { TrashIcon } from '@heroicons/vue/24/outline'
-import type { WindowSelection } from '~/types/window'
-import { DIRTINESS_LEVELS } from '~/types/window'
+import type { WindowSelection } from '~/types/Windows.types'
+import { DIRTINESS_LEVELS } from '~/types/Windows.types'
 
 const props = defineProps<{
   window: WindowSelection
