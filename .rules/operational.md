@@ -35,3 +35,10 @@
 - **Vitrine impeccable = plus de clients** (ROI démontré)
 - **Intervention sans gêne** (hors horaires d'ouverture)
 - **Tarification transparente** (frais fixes + déplacement)
+
+## 🔧 Règles de Développement
+
+### Git & Commits
+- **Demander autorisation** avant tout commit
+- **Utiliser git add --patch** pour sélectionner les changements
+- **Messages de commit clairs** et descriptifs
