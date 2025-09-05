@@ -120,5 +120,7 @@
 </template>
 
 <script setup lang="ts">
+  import { socialMediaLinks, contacts } from "~/utils/socialMedia";
+  
   const dropLinks = ref(false);
 </script>

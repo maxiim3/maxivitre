@@ -1,3 +1,5 @@
+import { contacts } from "~/utils/socialMedia";
+
 export function useSubmitEmail() {
   let message = encodeURIComponent("J'ai une question !");
 

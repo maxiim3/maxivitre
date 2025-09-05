@@ -52,3 +52,7 @@
     </nav>
   </footer>
 </template>
+
+<script setup lang="ts">
+  import { socialMediaLinks } from "~/utils/socialMedia";
+</script>
