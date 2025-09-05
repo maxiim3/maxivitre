@@ -1,10 +1,21 @@
 <template>
   <main>
     <!-- Hero Section avec image de fond -->
-    <section
-      class="hero min-h-screen relative bg-cover bg-center bg-no-repeat"
-      style="background-image: linear-gradient(rgba(0, 31, 66, 0.7), rgba(0, 31, 66, 0.7)), url('https://images.unsplash.com/photo-1482449609509-eae2a7ea42b7?q=80&w=3540&auto=format&fit=crop')"
-    >
+    <section class="hero min-h-screen relative overflow-hidden">
+      <!-- Image de fond optimisée -->
+      <NuxtImg
+        src="https://images.unsplash.com/photo-1482449609509-eae2a7ea42b7"
+        alt="Nettoyage de vitres professionnel"
+        :width="1920"
+        :height="1080"
+        sizes="100vw"
+        format="webp"
+        quality="80"
+        priority
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      <!-- Overlay gradient -->
+      <div class="absolute inset-0 bg-gradient-to-br from-secondary/70 to-secondary/70 -z-5"></div>
       <div class="hero-content text-center text-white">
         <div class="max-w-2xl">
           <TheLogo class="w-32 mx-auto mb-8 fill-primary drop-shadow-2xl" />
@@ -50,7 +61,17 @@
           <!-- Service 1 - Commerces (priorité) -->
           <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow border-2 border-primary/20">
             <figure>
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop" alt="Commerces" class="w-full h-48 object-cover" />
+              <NuxtImg
+                src="https://images.unsplash.com/photo-1497366216548-37526070297c"
+                alt="Commerces"
+                :width="400"
+                :height="300"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                format="webp"
+                quality="80"
+                loading="lazy"
+                class="w-full h-48 object-cover"
+              />
             </figure>
             <div class="card-body">
               <h3 class="card-title text-primary">
@@ -69,7 +90,17 @@
           <!-- Service 2 - Agences -->
           <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
             <figure>
-              <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400&h=300&fit=crop" alt="Agences" class="w-full h-48 object-cover" />
+              <NuxtImg
+                src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d"
+                alt="Agences"
+                :width="400"
+                :height="300"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                format="webp"
+                quality="80"
+                loading="lazy"
+                class="w-full h-48 object-cover"
+              />
             </figure>
             <div class="card-body">
               <h3 class="card-title text-primary">
@@ -87,7 +118,17 @@
           <!-- Service 3 - Particuliers -->
           <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
             <figure>
-              <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop" alt="Particuliers" class="w-full h-48 object-cover" />
+              <NuxtImg
+                src="https://images.unsplash.com/photo-1581578731548-c64695cc6952"
+                alt="Particuliers"
+                :width="400"
+                :height="300"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                format="webp"
+                quality="80"
+                loading="lazy"
+                class="w-full h-48 object-cover"
+              />
             </figure>
             <div class="card-body">
               <h3 class="card-title text-primary">
@@ -295,52 +336,22 @@
       </div>
     </section>
 
-    <!-- Section Processus -->
-    <section class="py-20 bg-base-100">
-      <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Comment Ça Marche ?</h2>
-        <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
-          Un processus simple et efficace en 4 étapes
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="text-center">
-            <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-              1
-            </div>
-            <h3 class="text-xl font-bold mb-2">Demande de Devis</h3>
-            <p>Remplissez notre formulaire en ligne ou appelez-nous directement</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-              2
-            </div>
-            <h3 class="text-xl font-bold mb-2">Estimation</h3>
-            <p>Nous vous envoyons un devis détaillé sous 24h</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-              3
-            </div>
-            <h3 class="text-xl font-bold mb-2">Intervention</h3>
-            <p>Notre équipe intervient à la date convenue</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-              4
-            </div>
-            <h3 class="text-xl font-bold mb-2">Satisfaction</h3>
-            <p>Des vitres impeccables et un client satisfait</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Section CTA -->
-    <section 
-      class="py-20 bg-cover bg-center bg-fixed relative"
-      style="background-image: url('https://images.unsplash.com/photo-1563013712-3195246a3cc0?w=1600&q=80')"
-    >
-      <div class="absolute inset-0 bg-secondary/90"></div>
+    <section class="py-20 relative overflow-hidden">
+      <!-- Image de fond optimisée -->
+      <NuxtImg
+        src="https://images.unsplash.com/photo-1563013712-3195246a3cc0"
+        alt="Façade de commerce avec vitres propres"
+        :width="1600"
+        :height="900"
+        sizes="100vw"
+        format="webp"
+        quality="80"
+        loading="lazy"
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      <div class="absolute inset-0 bg-secondary/90 -z-5"></div>
       <div class="container mx-auto px-4 relative z-10">
         <div class="text-center text-white max-w-3xl mx-auto">
           <h2 class="text-4xl font-bold mb-4 text-primary">Commerces de Castelnau-le-Lez</h2>
