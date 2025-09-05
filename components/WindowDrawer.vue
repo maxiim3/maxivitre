@@ -14,7 +14,7 @@
           >
             <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
               <div class="flex items-start justify-between">
-                <h2 class="text-lg font-medium text-gray-900">Select Window Type</h2>
+                <h2 class="text-lg font-medium text-gray-900">Sélectionner le type de fenêtre</h2>
                 <button
                   type="button"
                   class="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
@@ -66,12 +66,12 @@ const emit = defineEmits<{
 }>()
 
 const windows: WindowType[] = [
-  { id: 'standard', name: 'Standard Window', image: '🪟', basePrice: 25 },
-  { id: 'large', name: 'Large Window', image: '🪟', basePrice: 35 },
-  { id: 'bay', name: 'Bay Window', image: '🪟', basePrice: 45 },
-  { id: 'sliding', name: 'Sliding Door', image: '🚪', basePrice: 40 },
-  { id: 'french', name: 'French Door', image: '🚪', basePrice: 50 },
-  { id: 'skylight', name: 'Skylight', image: '🪟', basePrice: 60 }
+  { id: 'standard', name: 'Fenêtre standard', image: '🪟', basePrice: 25 },
+  { id: 'large', name: 'Grande fenêtre', image: '🪟', basePrice: 35 },
+  { id: 'bay', name: 'Fenêtre en saillie', image: '🪟', basePrice: 45 },
+  { id: 'sliding', name: 'Porte coulissante', image: '🚪', basePrice: 40 },
+  { id: 'french', name: 'Porte-fenêtre', image: '🚪', basePrice: 50 },
+  { id: 'skylight', name: 'Fenêtre de toit', image: '🪟', basePrice: 60 }
 ]
 
 const closeDrawer = () => {

@@ -29,7 +29,7 @@ La section "Nos Services" n'est plus alignée avec la nouvelle stratégie commer
 4. **Cohérence** avec le positionnement "extérieur uniquement"
 
 ## Status
-- [ ] En attente
+- [x] ✅ **Terminé** - Section services refactorisée selon stratégie 70/20/10
 
 ## Priority
 Medium - Cohérence stratégique importante

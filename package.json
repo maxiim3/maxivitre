@@ -13,6 +13,7 @@
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/image": "^1.8.1",
     "@nuxtjs/tailwindcss": "^6.11.4",
+    "caniuse-lite": "^1.0.30001741",
     "nuxt": "^3.13.0"
   },
   "devDependencies": {

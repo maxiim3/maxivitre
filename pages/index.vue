@@ -55,11 +55,11 @@
       <div class="container mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Nos Services</h2>
         <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
-          Des solutions adaptées à tous vos besoins de nettoyage de vitres
+          Spécialiste nettoyage <strong>extérieur uniquement</strong> • Priorité commerces Castelnau-le-Lez
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Service 1 - Commerces (priorité) -->
-          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow border-2 border-primary/20">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <!-- Service 1 - Commerces (70% focus) -->
+          <div class="md:col-span-6 card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow border-2 border-primary/30 scale-105">
             <figure>
               <NuxtImg
                 src="https://images.unsplash.com/photo-1497366216548-37526070297c"
@@ -81,14 +81,14 @@
                 Commerces & Bureaux
                 <span class="badge badge-primary badge-sm">Priorité</span>
               </h3>
-              <p>Vitrine impeccable = plus de clients ! Nettoyage extérieur, intervention weekend sans perturber votre activité.</p>
+              <p><strong>Vitrine impeccable = plus de clients !</strong> Nettoyage extérieur spécialisé. Intervention weekend sans perturber votre activité. Priorité absolue Castelnau-le-Lez.</p>
               <div class="card-actions justify-end">
                 <NuxtLink to="/devis" class="btn btn-primary btn-sm">Devis pro</NuxtLink>
               </div>
             </div>
           </div>
-          <!-- Service 2 - Agences -->
-          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
+          <!-- Service 2 - Agences (20% focus) -->
+          <div class="md:col-span-4 card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow border border-secondary/20">
             <figure>
               <NuxtImg
                 src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d"
@@ -108,15 +108,16 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Agences & Syndics
+                <span class="badge badge-secondary badge-sm">20%</span>
               </h3>
-              <p>Image professionnelle indispensable. Contrats d'entretien régulier avec tarifs préférentiels.</p>
+              <p>Image professionnelle indispensable. <strong>Contrats d'entretien régulier</strong> avec tarifs préférentiels. Nettoyage extérieur uniquement.</p>
               <div class="card-actions justify-end">
-                <NuxtLink to="/devis" class="btn btn-primary btn-sm">En savoir plus</NuxtLink>
+                <NuxtLink to="/devis" class="btn btn-secondary btn-sm">Devis contrat</NuxtLink>
               </div>
             </div>
           </div>
-          <!-- Service 3 - Particuliers -->
-          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
+          <!-- Service 3 - Particuliers (10% focus) -->
+          <div class="md:col-span-2 card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow opacity-90">
             <figure>
               <NuxtImg
                 src="https://images.unsplash.com/photo-1581578731548-c64695cc6952"
@@ -131,15 +132,16 @@
               />
             </figure>
             <div class="card-body">
-              <h3 class="card-title text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <h3 class="card-title text-primary text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 Particuliers
+                <span class="badge badge-outline badge-xs">10%</span>
               </h3>
-              <p>Maisons, appartements, vérandas... Intérieur et extérieur selon vos besoins.</p>
+              <p class="text-sm">Service résidentiel complémentaire. <strong>Nettoyage extérieur uniquement.</strong> Maisons, appartements, vérandas.</p>
               <div class="card-actions justify-end">
-                <NuxtLink to="/devis" class="btn btn-primary btn-sm">En savoir plus</NuxtLink>
+                <NuxtLink to="/devis" class="btn btn-outline btn-xs">Devis extérieur</NuxtLink>
               </div>
             </div>
           </div>
@@ -420,6 +422,43 @@ import { ref, computed } from 'vue'
 import { socialMediaLinks } from '~/utils/socialMedia';
 
 const selectedClientType = ref<'pro' | 'particulier'>('pro')
+
+// SEO et schemas structurés
+const { organizationSchema, localBusinessSchema, servicesSchemas } = useSchemas()
+
+// Meta tags pour le SEO
+useHead({
+  title: 'MaxiVitre - Nettoyage Vitres Professionnel Castelnau-le-Lez | -25% 1ère intervention',
+  meta: [
+    { name: 'description', content: 'Spécialiste nettoyage vitres commerces Castelnau-le-Lez. Vitrine impeccable = plus de clients ! Intervention weekend, -25% première fois. ☎️ 07 78 81 85 83' },
+    { name: 'keywords', content: 'nettoyage vitres, Castelnau-le-Lez, commerces, vitrines, professionnel, Montpellier' },
+    { property: 'og:title', content: 'MaxiVitre - Nettoyage Vitres Professionnel Castelnau-le-Lez' },
+    { property: 'og:description', content: 'Spécialiste nettoyage vitres commerces. Vitrine impeccable = plus de clients ! -25% première intervention.' },
+    { property: 'og:type', content: 'business.business' },
+    { property: 'og:locale', content: 'fr_FR' }
+  ]
+})
+
+// Ajout des schemas JSON-LD dans le head
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify(organizationSchema)
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify(localBusinessSchema)
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': servicesSchemas
+      })
+    }
+  ]
+})
 
 const offers = computed(() => {
   if (selectedClientType.value === 'pro') {
