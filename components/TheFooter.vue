@@ -9,7 +9,7 @@
       </p>
       <p>Copyright © {{ year }} - Tous droits réservés</p>
       <p>
-        Design et développement par
+        Réalisé par l'agence
         <NuxtLink to="https://digitalsolution.studio"
           >DIGITAL SOLUTION STUDIO</NuxtLink
         >
@@ -55,6 +55,6 @@
 
 <script setup lang="ts">
   import { socialMediaLinks } from "~/utils/socialMedia";
-  
+
   const year = computed(() => new Date().getFullYear());
 </script>
