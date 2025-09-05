@@ -1,3 +1,13 @@
-- [] optimisation: homepage/hero section: l'image est longhe a charger. faut optimiser ça en destkop et mobile. priority: important
-- [] chore: beacoup de div dans le code: utiliser plus de semantiques HTML. priority: can wait
-- [] chore: extraire en composant ce qui peut l'etre pour eviter la duplication de code. priotrity: not important
+# Issues
+
+**Note**: Les tâches ont été extraites en tickets individuels dans ce dossier.
+
+## High Priority
+- [ ] **0002-optimization-hero-image-loading** - Optimiser chargement image hero → Voir `0002-optimization-hero-image-loading.md`
+
+## Medium Priority  
+- [ ] **0007-refactor-services-section** - Réaligner section services avec stratégie → Voir `0007-refactor-services-section.md`
+- [ ] **0003-chore-semantic-html** - Améliorer sémantique HTML → Voir `0003-chore-semantic-html.md`
+
+## Low Priority
+- [ ] **0004-chore-extract-components** - Extraire en composants → Voir `0004-chore-extract-components.md`
