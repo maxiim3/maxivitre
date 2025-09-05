@@ -27,7 +27,7 @@
               <h2 class="text-lg font-semibold text-gray-900">
                 Configuration des fenêtres
               </h2>
-              <button @click="isDrawerOpen = true" class="btn btn-primary">
+              <button @click="openDrawerForAdd()" class="btn btn-primary">
                 Ajouter une fenêtre
               </button>
             </div>
@@ -41,22 +41,24 @@
                 Ajoutez vos fenêtres pour calculer le prix de votre devis
               </p>
               <button
-                @click="isDrawerOpen = true"
+                @click="openDrawerForAdd()"
                 class="btn btn-primary"
               >
                 Ajouter ma première fenêtre
               </button>
             </div>
 
-            <div v-else class="space-y-4">
-              <WindowCard
-                v-for="(window, index) in selectedWindows"
-                :key="index"
-                :window="window"
-                :clientType="clientType"
-                @remove="removeWindow(index)"
-                @update="updateWindow(index, $event)"
-              />
+            <div v-else>
+              <p class="text-sm text-gray-600 mb-4">
+                Gérez vos fenêtres via le panier sur la droite (desktop) ou en bas (mobile).
+              </p>
+              <div class="text-center py-8">
+                <div class="text-4xl mb-2">✅</div>
+                <p class="text-lg font-medium text-gray-900">{{ selectedWindows.length }} fenêtre{{ selectedWindows.length > 1 ? 's' : '' }} ajoutée{{ selectedWindows.length > 1 ? 's' : '' }}</p>
+                <p class="text-sm text-gray-500 mt-2">
+                  Utilisez le panier pour modifier ou supprimer vos fenêtres
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -205,13 +207,19 @@
       </div>
     </div>
 
-    <WindowDrawer v-model:isOpen="isDrawerOpen" @select="addWindow" />
+    <WindowDrawer 
+      v-model:isOpen="isDrawerOpen" 
+      :editingWindow="editingWindowIndex !== null ? selectedWindows[editingWindowIndex] : null"
+      :isEditing="editingWindowIndex !== null"
+      @select="editingWindowIndex !== null ? updateWindow(editingWindowIndex, $event) : addWindow($event)" 
+    />
     
     <!-- Shopping Cart -->
     <ShoppingCart 
       :windows="selectedWindows" 
       :clientType="clientType"
       @remove="removeWindow"
+      @edit="openDrawerForEdit"
     />
     
     <!-- Modal de confirmation pour brouillon existant -->
@@ -258,6 +266,7 @@ const globalOptions = ref<ServiceOptions>({
 const selectedWindows = ref<WindowSelection[]>([]);
 const isDrawerOpen = ref(false);
 const customerEmail = ref('');
+const editingWindowIndex = ref<number | null>(null);
 
 // Modal state
 const showDraftModal = ref(false);
@@ -289,6 +298,18 @@ const removeWindow = (index: number) => {
 
 const updateWindow = (index: number, window: WindowSelection) => {
   selectedWindows.value[index] = window;
+  editingWindowIndex.value = null;
+  isDrawerOpen.value = false;
+};
+
+const openDrawerForAdd = () => {
+  editingWindowIndex.value = null;
+  isDrawerOpen.value = true;
+};
+
+const openDrawerForEdit = (index: number) => {
+  editingWindowIndex.value = index;
+  isDrawerOpen.value = true;
 };
 
 // Navigation

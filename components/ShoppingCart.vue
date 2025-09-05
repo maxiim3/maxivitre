@@ -5,34 +5,33 @@
       <div class="p-4 border-b border-gray-200 bg-primary/5">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900">🛒 Votre devis</h3>
-          <span class="text-sm text-gray-500">{{ windows.length }} fenêtre{{ windows.length > 1 ? 's' : '' }}</span>
+          <span class="text-sm text-gray-500">{{ totalWindowCount }} fenêtre{{ totalWindowCount > 1 ? 's' : '' }}</span>
         </div>
       </div>
       
-      <div v-if="windows.length === 0" class="p-6 text-center text-gray-500">
+      <div v-if="totalWindowCount === 0" class="p-6 text-center text-gray-500">
         <div class="text-4xl mb-2">🪟</div>
         <p class="text-sm">Aucune fenêtre ajoutée</p>
       </div>
       
       <div v-else class="max-h-48 overflow-y-auto">
         <div class="divide-y divide-gray-100">
+          <!-- Affichage individualisé de chaque fenêtre -->
           <div 
             v-for="(window, index) in windows" 
             :key="index"
             class="p-3 hover:bg-gray-50 group"
           >
-            <div class="flex items-start justify-between">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center space-x-2">
-                  <span class="text-lg">{{ window.image }}</span>
-                  <div class="flex-1">
-                    <p class="text-sm font-medium text-gray-900 truncate">{{ window.name }}</p>
-                    <p class="text-xs text-gray-500">
-                      {{ getSizeLabel(window.size) }} • 
-                      {{ getCleaningTypeLabel(window.cleaningType) }} • 
-                      Qty: {{ window.quantity }}
-                    </p>
-                  </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3 flex-1 min-w-0">
+                <span class="text-lg">{{ window.image }}</span>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900 truncate">{{ window.name }}</p>
+                  <p class="text-xs text-gray-500">
+                    {{ getSizeLabel(window.size) }} • 
+                    {{ getCleaningTypeLabel(window.cleaningType) }} • 
+                    Qty: {{ window.quantity }}
+                  </p>
                 </div>
               </div>
               <div class="flex items-center space-x-2">
@@ -40,10 +39,18 @@
                   {{ calculatePrice(window) }}€
                 </span>
                 <button
-                  @click="$emit('remove', index)"
-                  class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 rounded"
+                  @click="$emit('edit', index)"
+                  class="p-2 hover:bg-blue-100 rounded-md border border-blue-200 hover:border-blue-300 transition-colors"
+                  title="Modifier cette fenêtre"
                 >
-                  <span class="text-xs text-red-600">🗑️</span>
+                  <span class="text-sm text-blue-600">✏️</span>
+                </button>
+                <button
+                  @click="$emit('remove', index)"
+                  class="p-2 hover:bg-red-100 rounded-md border border-red-200 hover:border-red-300 transition-colors"
+                  title="Supprimer cette fenêtre"
+                >
+                  <span class="text-sm text-red-600">🗑️</span>
                 </button>
               </div>
             </div>
@@ -51,7 +58,7 @@
         </div>
       </div>
       
-      <div v-if="windows.length > 0" class="p-4 border-t border-gray-200 bg-gray-50">
+      <div v-if="totalWindowCount > 0" class="p-4 border-t border-gray-200 bg-gray-50">
         <div class="flex justify-between items-center mb-2">
           <span class="text-sm text-gray-600">Sous-total</span>
           <span class="text-sm font-medium">{{ subtotal }}€</span>
@@ -76,7 +83,7 @@
   <!-- Mobile: Footer fixe en bas -->
   <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg">
     <div class="p-4">
-      <div v-if="windows.length === 0" class="text-center text-gray-500">
+      <div v-if="totalWindowCount === 0" class="text-center text-gray-500">
         <p class="text-sm">Aucune fenêtre ajoutée au devis</p>
       </div>
       
@@ -84,7 +91,7 @@
         <!-- Summary line -->
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center space-x-2">
-            <span class="text-sm text-gray-600">{{ windows.length }} fenêtre{{ windows.length > 1 ? 's' : '' }}</span>
+            <span class="text-sm text-gray-600">{{ totalWindowCount }} fenêtre{{ totalWindowCount > 1 ? 's' : '' }}</span>
             <button 
               @click="showDetails = !showDetails"
               class="text-xs text-primary hover:underline"
@@ -115,10 +122,18 @@
             <div class="flex items-center space-x-2">
               <span class="font-medium">{{ calculatePrice(window) }}€</span>
               <button
-                @click="$emit('remove', index)"
-                class="p-1 hover:bg-red-100 rounded"
+                @click="$emit('edit', index)"
+                class="p-2 hover:bg-blue-100 rounded-md border border-blue-200 hover:border-blue-300 transition-colors"
+                title="Modifier cette fenêtre"
               >
-                <span class="text-red-600">🗑️</span>
+                <span class="text-sm text-blue-600">✏️</span>
+              </button>
+              <button
+                @click="$emit('remove', index)"
+                class="p-2 hover:bg-red-100 rounded-md border border-red-200 hover:border-red-300 transition-colors"
+                title="Supprimer cette fenêtre"
+              >
+                <span class="text-sm text-red-600">🗑️</span>
               </button>
             </div>
           </div>
@@ -138,6 +153,7 @@ const props = defineProps<{
 
 defineEmits<{
   remove: [index: number]
+  edit: [index: number]
 }>()
 
 const showDetails = ref(false)
@@ -157,6 +173,11 @@ const subtotal = computed(() => {
 
 const grandTotal = computed(() => {
   return windowPricing.calculateQuoteTotal(props.windows, props.clientType)
+})
+
+// Nombre total de fenêtres (en comptant les quantités)
+const totalWindowCount = computed(() => {
+  return props.windows.reduce((sum, window) => sum + (window.quantity || 1), 0)
 })
 
 const getSizeLabel = (size: string) => {

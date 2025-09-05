@@ -14,7 +14,9 @@
           >
             <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
               <div class="flex items-start justify-between mb-6">
-                <h2 class="text-lg font-medium text-gray-900">Ajouter une fenêtre</h2>
+                <h2 class="text-lg font-medium text-gray-900">
+                  {{ isEditing ? 'Modifier la fenêtre' : 'Ajouter une fenêtre' }}
+                </h2>
                 <button
                   type="button"
                   class="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
@@ -113,9 +115,17 @@
                       class="radio radio-primary"
                     >
                     <div class="flex-1">
-                      <label :for="cleaning.value" class="text-sm font-medium text-gray-900 cursor-pointer">
-                        {{ cleaning.label }}
-                      </label>
+                      <div class="flex items-center justify-between">
+                        <label :for="cleaning.value" class="text-sm font-medium text-gray-900 cursor-pointer">
+                          {{ cleaning.label }}
+                        </label>
+                        <span 
+                          v-if="cleaning.value === 'exterieur'"
+                          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-500 text-white"
+                        >
+                          ⭐ RECOMMANDÉ
+                        </span>
+                      </div>
                       <p class="text-xs text-gray-500">{{ cleaning.description }}</p>
                       <div v-if="cleaning.surcharge" class="mt-1">
                         <span :class="[
@@ -130,29 +140,63 @@
                 </div>
               </div>
 
-              <!-- Quantité et Accessibilité -->
-              <div class="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-900 mb-2">Quantité</label>
-                  <input
-                    type="number"
-                    v-model.number="quantity"
-                    min="1"
-                    max="50"
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+              <!-- Quantité -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-900 mb-2">Quantité</label>
+                <input
+                  type="number"
+                  v-model.number="quantity"
+                  min="1"
+                  max="50"
+                  class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                >
+              </div>
+
+              <!-- Accessibilité en radio cards -->
+              <div class="mb-6">
+                <h3 class="text-sm font-medium text-gray-900 mb-4">Accessibilité</h3>
+                <div class="space-y-2">
+                  <div 
+                    v-for="accessOption in accessibilityOptions"
+                    :key="accessOption.value"
+                    :class="[
+                      'flex items-center space-x-3 p-3 rounded-lg border-2 cursor-pointer transition-all',
+                      accessibility === accessOption.value 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    ]"
+                    @click="accessibility = accessOption.value"
                   >
+                    <input
+                      :id="accessOption.value"
+                      type="radio"
+                      :value="accessOption.value"
+                      v-model="accessibility"
+                      class="radio radio-primary"
+                    >
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2">
+                        <span class="text-lg">{{ accessOption.icon }}</span>
+                        <label :for="accessOption.value" class="text-sm font-medium text-gray-900 cursor-pointer">
+                          {{ accessOption.label }}
+                        </label>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">{{ accessOption.description }}</p>
+                      <div v-if="accessOption.surcharge" class="mt-1">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                          {{ accessOption.surcharge }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-900 mb-2">Accessibilité</label>
-                  <select
-                    v-model="accessibility"
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-                  >
-                    <option value="rdc">Rez-de-chaussée</option>
-                    <option value="etage">Étage</option>
-                    <option value="hauteur">Grande hauteur</option>
-                    <option value="nacelle">Nacelle</option>
-                  </select>
+                
+                <!-- Hint text -->
+                <div class="mt-3 flex items-start space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <span class="text-blue-500 text-sm">📝</span>
+                  <p class="text-xs text-blue-700">
+                    <strong>Note :</strong> Nous n'utilisons pas de nacelle ou d'équipement suspendu pour nos interventions.
+                  </p>
                 </div>
               </div>
 
@@ -182,7 +226,7 @@
                 class="btn btn-primary"
                 :class="{ 'btn-disabled': !canAdd }"
               >
-                Ajouter
+                {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
               </button>
             </div>
           </div>
@@ -197,6 +241,8 @@ import type { WindowType, WindowSize, CleaningType, AccessibilityLevel } from '~
 
 const props = defineProps<{
   isOpen: boolean
+  editingWindow?: WindowType | null
+  isEditing?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -272,6 +318,24 @@ const selectedCleaningType = ref<CleaningType>('exterieur')
 const quantity = ref(1)
 const accessibility = ref<AccessibilityLevel>('rdc')
 
+// Options d'accessibilité
+const accessibilityOptions = [
+  { 
+    value: 'rdc', 
+    label: 'Accès facile', 
+    icon: '🏠',
+    description: 'Rez-de-chaussée, balcon accessible',
+    surcharge: 'Tarif standard'
+  },
+  { 
+    value: 'etage', 
+    label: 'Accès difficile', 
+    icon: '⛰️',
+    description: 'Étage élevé, échelle nécessaire',
+    surcharge: 'Majoration +50%'
+  }
+]
+
 // Calcul prix estimé
 const windowPricing = useWindowPricing()
 
@@ -330,9 +394,21 @@ const addWindow = () => {
   closeDrawer()
 }
 
+// Pre-fill form when editing
+watch(() => props.editingWindow, (editingWindow) => {
+  if (editingWindow && props.isEditing) {
+    selectedWindow.value = editingWindow
+    selectedWindowId.value = editingWindow.id
+    selectedSize.value = (editingWindow as any).size || 'moyenne'
+    selectedCleaningType.value = (editingWindow as any).cleaningType || 'exterieur'
+    quantity.value = (editingWindow as any).quantity || 1
+    accessibility.value = (editingWindow as any).accessibility || 'rdc'
+  }
+}, { immediate: true })
+
 // Reset form when drawer closes
 watch(() => props.isOpen, (isOpen) => {
-  if (!isOpen) {
+  if (!isOpen && !props.isEditing) {
     selectedWindow.value = null
     selectedWindowId.value = ''
     selectedSize.value = 'moyenne'

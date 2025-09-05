@@ -118,12 +118,31 @@ Créer une page de devis complète avec calculateur de prix et options personnal
 - Messages de validation contextuels
 - Auto-save transparent toutes les 30 secondes
 
-### 🚀 Prêt pour Production
-- Code structuré et maintenable
-- Types TypeScript complets
-- Composants réutilisables
-- Logique métier centralisée
-- UX soignée et accessible
+### ⚡ Version 2.0 - Feedbacks Utilisateur Intégrés
+
+**🎯 Refonte Majeure Réalisée (Commit: 96e7dd1)**
+- Wizard restructuré : 3 étapes (Options/Fenêtres/Récap+Export)
+- Services refactorisés : Nouveau client / Entretien standard / Entretien récent
+- Pricing corrigé : +10€ Zone 2, +15€ Zone 3, multiplicateurs corrects
+- WindowDrawer simplifié : 5 types + tailles + Ext/Int (+180%)
+- ShoppingCart ajouté : Sidebar desktop + footer mobile
+- Stepper DaisyUI + modal confirmation + bouton Recommencer
+- Options additionnelles extraites (hors business rules)
+
+### 🔄 Détails de Finition Identifiés
+
+**🚨 Éléments Manqués à Corriger :**
+- Bouton supprimer fenêtres manquant
+- Drawer non-modifiable (pas possible d'éditer)
+- ShoppingCart liste fenêtres au lieu de cartes tailles
+- Exemples textuels manquants (< Xm², X-Xm², > Xm²)
+- Tag "Recommandé" absent sur nettoyage extérieur
+- Accessibilité en select au lieu de radio cards
+- Hint text manquant (pas nacelle/suspendu)
+
+### 🚀 Statut Production
+- ✅ **Version 1.0** : Fonctionnel, build validé  
+- 🔄 **Version 1.1** : Finition en cours (détails UX)
 
 ## Priority
 High
