@@ -66,3 +66,5 @@ npm run generate
 - Font loading handled automatically by @nuxt/fonts module
 - All text content is in French as this is a local French business
 - use bun instead of node
+- never mention time estimation. talk in sprint points
+- memory on creer chaque tache dans un fichier séparé
