@@ -315,7 +315,7 @@
               </div>
               <h3 :class="['card-title text-2xl justify-center', offer.titleClass]">{{ offer.title }}</h3>
               <div :class="['text-4xl font-bold my-4', offer.discountClass]">{{ offer.discount }}</div>
-              <p class="text-base-content">{{ offer.description }}</p>
+              <p class="text-base-content" v-html="offer.description"></p>
               <ul class="text-sm space-y-2 mt-4 text-left">
                 <li v-for="feature in offer.features" :key="feature">✓ {{ feature }}</li>
               </ul>
@@ -455,11 +455,11 @@ const offers = computed(() => {
     return [
       {
         id: 'decouverte-pro',
-        badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-primary' },
+        badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-warning' },
         title: 'Offre Découverte',
-        titleClass: 'text-primary',
+        titleClass: 'text-warning',
         discount: '-25%',
-        discountClass: 'text-primary',
+        discountClass: 'text-warning',
         description: 'Sur votre première intervention',
         features: [
           'Tous types de prestations',
@@ -467,17 +467,17 @@ const offers = computed(() => {
           'Sans engagement'
         ],
         buttonText: 'J\'en profite',
-        buttonClass: 'btn-primary',
-        cardClass: 'border-primary/30'
+        buttonClass: 'btn-warning',
+        cardClass: 'border-warning/30 shadow-warning/20'
       },
       {
         id: 'fidelite-pro',
-        badge: { text: '💼 RECOMMANDÉ PRO', class: 'badge-secondary' },
+        badge: { text: '💼 RECOMMANDÉ PRO', class: 'badge-primary' },
         title: 'Remise Fidélité',
-        titleClass: 'text-secondary',
+        titleClass: 'text-primary',
         discount: '-20%',
-        discountClass: 'text-secondary',
-        description: 'Si intervention < 2 mois de la précédente',
+        discountClass: 'text-primary',
+        description: 'Si intervention <strong>&lt; 2 mois</strong><br>de la précédente',
         features: [
           'Intervention programmée',
           'Suivi personnalisé',
@@ -485,19 +485,19 @@ const offers = computed(() => {
           'Facturation simplifiée'
         ],
         buttonText: 'Planifier',
-        buttonClass: 'btn-secondary',
-        cardClass: 'border-secondary/30 scale-105'
+        buttonClass: 'btn-primary',
+        cardClass: 'border-primary/30 shadow-primary/20 scale-105'
       },
       {
         id: 'standard-pro',
-        badge: { text: '⚡ PONCTUEL', class: 'badge-outline' },
+        badge: { text: '⚡ PONCTUEL', class: 'badge-ghost' },
         title: 'Intervention Unique',
         titleClass: '',
         discount: 'Tarif standard',
         discountClass: '',
         description: 'Selon zone d\'intervention',
         features: [
-          'Intervention sous 48h',
+          'Intervention flexible',
           'Tarif transparent',
           'Qualité garantie'
         ],
@@ -510,11 +510,11 @@ const offers = computed(() => {
     return [
       {
         id: 'decouverte-particulier',
-        badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-primary' },
+        badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-warning' },
         title: 'Offre Découverte',
-        titleClass: 'text-primary',
+        titleClass: 'text-warning',
         discount: '-25%',
-        discountClass: 'text-primary',
+        discountClass: 'text-warning',
         description: 'Sur votre première intervention',
         features: [
           'Intérieur et extérieur',
@@ -522,17 +522,17 @@ const offers = computed(() => {
           'Sans engagement'
         ],
         buttonText: 'J\'en profite',
-        buttonClass: 'btn-primary',
-        cardClass: 'border-primary/30'
+        buttonClass: 'btn-warning',
+        cardClass: 'border-warning/30 shadow-warning/20'
       },
       {
         id: 'fidelite-particulier',
-        badge: { text: '🏠 RECOMMANDÉ', class: 'badge-secondary' },
+        badge: { text: '🏠 RECOMMANDÉ', class: 'badge-primary' },
         title: 'Remise Fidélité',
-        titleClass: 'text-secondary',
+        titleClass: 'text-primary',
         discount: '-15%',
-        discountClass: 'text-secondary',
-        description: 'Si intervention < 6 mois de la précédente',
+        discountClass: 'text-primary',
+        description: 'Si intervention <strong>&lt; 6 mois</strong><br>de la précédente',
         features: [
           'Service complet',
           'Suivi personnalisé',
@@ -540,12 +540,12 @@ const offers = computed(() => {
           'Conseils personnalisés'
         ],
         buttonText: 'Réserver',
-        buttonClass: 'btn-secondary',
-        cardClass: 'border-secondary/30 scale-105'
+        buttonClass: 'btn-primary',
+        cardClass: 'border-primary/30 shadow-primary/20 scale-105'
       },
       {
         id: 'standard-particulier',
-        badge: { text: '⚡ PONCTUEL', class: 'badge-outline' },
+        badge: { text: '⚡ PONCTUEL', class: 'badge-ghost' },
         title: 'Intervention Unique',
         titleClass: '',
         discount: 'Tarif standard',
