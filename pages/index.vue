@@ -3,31 +3,31 @@
     <!-- Hero Section avec image de fond -->
     <section
       class="hero min-h-screen relative bg-cover bg-center bg-no-repeat"
-      style="background-image: linear-gradient(rgba(0, 31, 66, 0.7), rgba(0, 31, 66, 0.7)), url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80')"
+      style="background-image: linear-gradient(rgba(0, 31, 66, 0.7), rgba(0, 31, 66, 0.7)), url('https://images.unsplash.com/photo-1482449609509-eae2a7ea42b7?q=80&w=3540&auto=format&fit=crop')"
     >
       <div class="hero-content text-center text-white">
         <div class="max-w-2xl">
           <TheLogo class="w-32 mx-auto mb-8 fill-primary drop-shadow-2xl" />
           <h1 class="mb-5 text-6xl font-bold uppercase tracking-wider">MAXIVITRE</h1>
           <p class="mb-8 text-2xl text-primary font-medium">
-            Le spécialiste du nettoyage de vitres à Montpellier
+            Spécialiste nettoyage extérieur pour commerces • Castelnau-le-Lez
           </p>
           <p class="mb-10 text-lg opacity-90">
-            Professionnels ou particuliers, redonnez de l'éclat à vos vitres avec notre service expert.
-            Devis gratuit et intervention rapide.
+            Vitrine impeccable = plus de clients ! Intervention flexible weekend, horaires adaptés à votre activité.
+            <strong class="text-primary">-25% sur votre première intervention.</strong>
           </p>
           <div class="flex gap-4 justify-center flex-wrap">
             <NuxtLink to="/devis" class="btn btn-primary btn-lg px-8">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              Devis Gratuit
+              🎁 Première intervention -25%
             </NuxtLink>
             <a href="tel:+33778818583" class="btn btn-outline btn-lg px-8 text-white border-white hover:bg-white hover:text-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              Appeler
+              Appeler directement
             </a>
           </div>
         </div>
@@ -47,7 +47,44 @@
           Des solutions adaptées à tous vos besoins de nettoyage de vitres
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Service 1 -->
+          <!-- Service 1 - Commerces (priorité) -->
+          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow border-2 border-primary/20">
+            <figure>
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop" alt="Commerces" class="w-full h-48 object-cover" />
+            </figure>
+            <div class="card-body">
+              <h3 class="card-title text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                Commerces & Bureaux
+                <span class="badge badge-primary badge-sm">Priorité</span>
+              </h3>
+              <p>Vitrine impeccable = plus de clients ! Nettoyage extérieur, intervention weekend sans perturber votre activité.</p>
+              <div class="card-actions justify-end">
+                <NuxtLink to="/devis" class="btn btn-primary btn-sm">Devis pro</NuxtLink>
+              </div>
+            </div>
+          </div>
+          <!-- Service 2 - Agences -->
+          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
+            <figure>
+              <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400&h=300&fit=crop" alt="Agences" class="w-full h-48 object-cover" />
+            </figure>
+            <div class="card-body">
+              <h3 class="card-title text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Agences & Syndics
+              </h3>
+              <p>Image professionnelle indispensable. Contrats d'entretien régulier avec tarifs préférentiels.</p>
+              <div class="card-actions justify-end">
+                <NuxtLink to="/devis" class="btn btn-primary btn-sm">En savoir plus</NuxtLink>
+              </div>
+            </div>
+          </div>
+          <!-- Service 3 - Particuliers -->
           <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
             <figure>
               <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop" alt="Particuliers" class="w-full h-48 object-cover" />
@@ -59,43 +96,7 @@
                 </svg>
                 Particuliers
               </h3>
-              <p>Maisons, appartements, vérandas... Nous redonnons de la transparence à vos vitres pour un intérieur lumineux.</p>
-              <div class="card-actions justify-end">
-                <NuxtLink to="/devis" class="btn btn-primary btn-sm">En savoir plus</NuxtLink>
-              </div>
-            </div>
-          </div>
-          <!-- Service 2 -->
-          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
-            <figure>
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop" alt="Professionnels" class="w-full h-48 object-cover" />
-            </figure>
-            <div class="card-body">
-              <h3 class="card-title text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                Professionnels
-              </h3>
-              <p>Bureaux, commerces, immeubles... Service régulier ou ponctuel avec contrats sur mesure.</p>
-              <div class="card-actions justify-end">
-                <NuxtLink to="/devis" class="btn btn-primary btn-sm">En savoir plus</NuxtLink>
-              </div>
-            </div>
-          </div>
-          <!-- Service 3 -->
-          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
-            <figure>
-              <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400&h=300&fit=crop" alt="Syndics" class="w-full h-48 object-cover" />
-            </figure>
-            <div class="card-body">
-              <h3 class="card-title text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                Syndics & Copropriétés
-              </h3>
-              <p>Entretien régulier des parties communes, cages d'escalier et halls d'entrée. Tarifs préférentiels.</p>
+              <p>Maisons, appartements, vérandas... Intérieur et extérieur selon vos besoins.</p>
               <div class="card-actions justify-end">
                 <NuxtLink to="/devis" class="btn btn-primary btn-sm">En savoir plus</NuxtLink>
               </div>
@@ -154,59 +155,66 @@
       </div>
     </section>
 
-    <!-- Section Zone d'intervention avec carte stylisée -->
+    <!-- Section Zone d'intervention et tarifs -->
     <section class="py-20 bg-base-200">
       <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Zone d'Intervention</h2>
+        <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Zones d'Intervention & Tarifs</h2>
         <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
-          Nous intervenons rapidement dans tout l'Est de Montpellier
+          Tarification transparente selon la distance depuis Castelnau-le-Lez
         </p>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <div class="bg-base-100 p-8 rounded-2xl shadow-xl">
-              <h3 class="text-2xl font-bold mb-6 text-primary">Nos Secteurs</h3>
-              <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-lg">Montpellier Centre</span>
+              <h3 class="text-2xl font-bold mb-6 text-primary">Zones Tarifaires</h3>
+              <div class="space-y-6">
+                <!-- Zone 1 -->
+                <div class="p-4 bg-primary/10 rounded-xl border-l-4 border-primary">
+                  <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-lg text-primary">Zone 1 - Castelnau-le-Lez</h4>
+                    <span class="badge badge-primary">Tarif de base</span>
+                  </div>
+                  <p class="text-sm text-gray-600">Commune prioritaire • Déplacements optimisés</p>
                 </div>
-                <div class="flex items-center gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-lg">Montpellier Est</span>
+                
+                <!-- Zone 2 -->
+                <div class="p-4 bg-secondary/10 rounded-xl border-l-4 border-secondary">
+                  <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-lg text-secondary">Zone 2 - Communes limitrophes</h4>
+                    <span class="badge badge-secondary">+15€</span>
+                  </div>
+                  <div class="text-sm space-y-1">
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Le Crès, Jacou, Clapiers</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Vendargues, Baillargues</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex items-center gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-lg">Castelnau-le-Lez</span>
-                </div>
-                <div class="flex items-center gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-lg">Jacou</span>
-                </div>
-                <div class="flex items-center gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-lg">Clapiers</span>
-                </div>
-                <div class="flex items-center gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-lg">Le Crès</span>
+
+                <!-- Zone 3 -->
+                <div class="p-4 bg-accent/10 rounded-xl border-l-4 border-accent">
+                  <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-lg text-accent">Zone 3 - Montpellier centre/Est</h4>
+                    <span class="badge badge-accent">+25€</span>
+                  </div>
+                  <p class="text-sm text-gray-600">Centre-ville, Ecusson, quartiers Est</p>
                 </div>
               </div>
-              <div class="mt-8 p-4 bg-primary/10 rounded-lg">
-                <p class="text-sm">
-                  <strong class="text-primary">Zone d'intervention :</strong> Jusqu'à 15km autour de Montpellier
-                </p>
+              
+              <div class="mt-6 p-4 bg-primary/5 rounded-lg">
+                <div class="flex items-center gap-2 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-primary font-medium">Supplément transport calculé selon la distance réelle</span>
+                </div>
               </div>
             </div>
           </div>
@@ -229,6 +237,72 @@
                     <p class="text-xs text-gray-600">Castelnau-le-Lez</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Offres Tarifaires -->
+    <section class="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Nos Offres</h2>
+        <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
+          Solutions flexibles adaptées aux professionnels et particuliers
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <!-- Offre Découverte -->
+          <div class="card bg-base-100 shadow-xl border-2 border-primary/30">
+            <div class="card-body text-center">
+              <div class="badge badge-primary badge-lg mb-4">🎁 NOUVEAU CLIENT</div>
+              <h3 class="card-title text-2xl justify-center text-primary">Offre Découverte</h3>
+              <div class="text-4xl font-bold text-primary my-4">-25%</div>
+              <p class="text-base-content">Sur votre première intervention</p>
+              <ul class="text-sm space-y-2 mt-4 text-left">
+                <li>✓ Tous types de prestations</li>
+                <li>✓ Valable toutes zones</li>
+                <li>✓ Sans engagement</li>
+              </ul>
+              <div class="card-actions justify-center mt-6">
+                <NuxtLink to="/devis" class="btn btn-primary">J'en profite</NuxtLink>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abonnement Mensuel -->
+          <div class="card bg-base-100 shadow-xl border-2 border-secondary/30 scale-105">
+            <div class="card-body text-center">
+              <div class="badge badge-secondary badge-lg mb-4">💼 RECOMMANDÉ PRO</div>
+              <h3 class="card-title text-2xl justify-center text-secondary">Abonnement Mensuel</h3>
+              <div class="text-4xl font-bold text-secondary my-4">-20%</div>
+              <p class="text-base-content">Sur toutes vos interventions</p>
+              <ul class="text-sm space-y-2 mt-4 text-left">
+                <li>✓ Intervention programmée</li>
+                <li>✓ Sans engagement</li>
+                <li>✓ Résiliable à tout moment</li>
+                <li>✓ Priorité sur planning</li>
+              </ul>
+              <div class="card-actions justify-center mt-6">
+                <NuxtLink to="/devis" class="btn btn-secondary">Souscrire</NuxtLink>
+              </div>
+            </div>
+          </div>
+
+          <!-- Intervention Ponctuelle -->
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body text-center">
+              <div class="badge badge-outline badge-lg mb-4">⚡ PONCTUEL</div>
+              <h3 class="card-title text-2xl justify-center">Intervention Unique</h3>
+              <div class="text-3xl font-bold my-4">Tarif standard</div>
+              <p class="text-base-content">Selon zone d'intervention</p>
+              <ul class="text-sm space-y-2 mt-4 text-left">
+                <li>✓ Intervention sous 48h</li>
+                <li>✓ Tarif transparent</li>
+                <li>✓ Qualité garantie</li>
+              </ul>
+              <div class="card-actions justify-center mt-6">
+                <NuxtLink to="/devis" class="btn btn-outline">Demander un devis</NuxtLink>
               </div>
             </div>
           </div>
@@ -284,16 +358,17 @@
       <div class="absolute inset-0 bg-secondary/90"></div>
       <div class="container mx-auto px-4 relative z-10">
         <div class="text-center text-white max-w-3xl mx-auto">
-          <h2 class="text-4xl font-bold mb-4 text-primary">Prêt à Faire Briller Vos Vitres ?</h2>
+          <h2 class="text-4xl font-bold mb-4 text-primary">Commerces de Castelnau-le-Lez</h2>
           <p class="text-xl mb-8 opacity-90">
-            Obtenez votre devis gratuit en quelques clics ou contactez-nous directement
+            Vitrine impeccable = plus de clients ! <strong>-25% sur votre première intervention.</strong>
+            Intervention weekend, sans perturber votre activité.
           </p>
           <div class="flex gap-4 justify-center flex-wrap">
             <NuxtLink to="/devis" class="btn btn-primary btn-lg px-8">
-              Devis Gratuit Immédiat
+              🎁 Offre Découverte -25%
             </NuxtLink>
             <a href="tel:+33778818583" class="btn btn-outline btn-lg px-8 text-white border-white hover:bg-white hover:text-secondary">
-              07 78 81 85 83
+              📞 07 78 81 85 83
             </a>
           </div>
           <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">

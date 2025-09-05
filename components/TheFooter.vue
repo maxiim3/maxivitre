@@ -7,7 +7,7 @@
         <br />
         Service de lavage de vitre depuis 2024
       </p>
-      <p>Copyright © {{ new Date().getFullYear() }} - Tous droits réservés</p>
+      <p>Copyright © {{ year }} - Tous droits réservés</p>
       <p>
         Design et développement par
         <NuxtLink to="https://digitalsolution.studio"
@@ -55,4 +55,6 @@
 
 <script setup lang="ts">
   import { socialMediaLinks } from "~/utils/socialMedia";
+  
+  const year = computed(() => new Date().getFullYear());
 </script>
