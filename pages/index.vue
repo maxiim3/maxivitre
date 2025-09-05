@@ -162,7 +162,7 @@
         <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
           Tarification transparente selon la distance depuis Castelnau-le-Lez
         </p>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
           <div>
             <div class="bg-base-100 p-8 rounded-2xl shadow-xl">
               <h3 class="text-2xl font-bold mb-6 text-primary">Zones Tarifaires</h3>
@@ -171,19 +171,18 @@
                 <div class="p-4 bg-primary/10 rounded-xl border-l-4 border-primary">
                   <div class="flex justify-between items-center mb-2">
                     <h4 class="font-bold text-lg text-primary">Zone 1 - Castelnau-le-Lez</h4>
-                    <div class="text-right">
-                      <div class="badge badge-primary">8€ + 0€</div>
-                      <div class="text-xs text-green-600 font-medium mt-1">Déplacement OFFERT</div>
-                    </div>
+                    <div class="badge badge-primary">Déplacement OFFERT</div>
                   </div>
-                  <p class="text-sm text-gray-600">Commune prioritaire • Frais fixes seulement</p>
+                  <p class="text-sm text-gray-600 mb-3">Commune prioritaire • Frais fixes seulement + prestation</p>
+                  <div class="text-center">
+                    <NuxtLink to="/devis" class="btn btn-primary btn-sm">Obtenir mon devis</NuxtLink>
+                  </div>
                 </div>
                 
                 <!-- Zone 2 -->
                 <div class="p-4 bg-secondary/10 rounded-xl border-l-4 border-secondary">
                   <div class="flex justify-between items-center mb-2">
                     <h4 class="font-bold text-lg text-secondary">Zone 2 - Communes limitrophes</h4>
-                    <div class="badge badge-secondary">8€ + 10€</div>
                   </div>
                   <div class="text-sm space-y-1 mb-2">
                     <div class="flex items-center gap-2">
@@ -199,34 +198,30 @@
                       <span>Vendargues, Baillargues</span>
                     </div>
                   </div>
-                  <p class="text-xs text-gray-500">Frais fixes 8€ + déplacement 10€</p>
+                  <p class="text-xs text-gray-500 mb-3">Frais fixes 8€ + déplacement 10€ + prestation</p>
+                  <div class="text-center">
+                    <NuxtLink to="/devis" class="btn btn-secondary btn-sm">Obtenir mon devis</NuxtLink>
+                  </div>
                 </div>
 
                 <!-- Zone 3 -->
                 <div class="p-4 bg-accent/10 rounded-xl border-l-4 border-accent">
                   <div class="flex justify-between items-center mb-2">
                     <h4 class="font-bold text-lg text-accent">Zone 3 - Montpellier centre/Est</h4>
-                    <div class="badge badge-accent">8€ + 15€</div>
                   </div>
                   <p class="text-sm text-gray-600 mb-2">Centre-ville, Ecusson, quartiers Est</p>
-                  <p class="text-xs text-gray-500">Frais fixes 8€ + déplacement 15€</p>
-                </div>
-              </div>
-              
-              <div class="mt-6 p-4 bg-primary/5 rounded-lg">
-                <div class="flex items-center gap-2 text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="text-primary font-medium">Tarif = Prestation + Frais fixes (8€) + Frais déplacement</span>
+                  <p class="text-xs text-gray-500 mb-3">Frais fixes 8€ + déplacement 15€ + prestation</p>
+                  <div class="text-center">
+                    <NuxtLink to="/devis" class="btn btn-accent btn-sm">Obtenir mon devis</NuxtLink>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div>
-            <div class="relative h-96 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl overflow-hidden shadow-xl h-full">
               <iframe 
-                src="https://www.openstreetmap.org/export/embed.html?bbox=3.8400%2C43.5800%2C3.9400%2C43.6400&layer=mapnik&marker=43.6318%2C3.8606"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=3.8200%2C43.6100%2C3.8900%2C43.6500&layer=mapnik&marker=43.6318%2C3.8606"
                 class="w-full h-full border-0"
                 loading="lazy"
                 title="Carte de Castelnau-le-Lez et environs"
@@ -253,61 +248,46 @@
     <section class="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
       <div class="container mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Nos Offres</h2>
-        <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
+        <p class="text-center text-lg mb-8 max-w-2xl mx-auto">
           Solutions flexibles adaptées aux professionnels et particuliers
         </p>
+        
+        <!-- Toggle Pro/Particulier -->
+        <div class="flex justify-center mb-12">
+          <div class="join">
+            <button 
+              :class="['btn join-item', selectedClientType === 'pro' ? 'btn-secondary' : 'btn-outline']"
+              @click="selectedClientType = 'pro'"
+            >
+              💼 Professionnels
+            </button>
+            <button 
+              :class="['btn join-item', selectedClientType === 'particulier' ? 'btn-secondary' : 'btn-outline']"
+              @click="selectedClientType = 'particulier'"
+            >
+              🏠 Particuliers
+            </button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <!-- Offre Découverte -->
-          <div class="card bg-base-100 shadow-xl border-2 border-primary/30">
+          <div 
+            v-for="offer in offers" 
+            :key="offer.id" 
+            :class="['card bg-base-100 shadow-xl border-2', offer.cardClass]"
+          >
             <div class="card-body text-center">
-              <div class="badge badge-primary badge-lg mb-4">🎁 NOUVEAU CLIENT</div>
-              <h3 class="card-title text-2xl justify-center text-primary">Offre Découverte</h3>
-              <div class="text-4xl font-bold text-primary my-4">-25%</div>
-              <p class="text-base-content">Sur votre première intervention</p>
-              <ul class="text-sm space-y-2 mt-4 text-left">
-                <li>✓ Tous types de prestations</li>
-                <li>✓ Valable toutes zones</li>
-                <li>✓ Sans engagement</li>
-              </ul>
-              <div class="card-actions justify-center mt-6">
-                <NuxtLink to="/devis" class="btn btn-primary">J'en profite</NuxtLink>
+              <div class="flex justify-center mb-4">
+                <div :class="['badge badge-lg', offer.badge.class]">{{ offer.badge.text }}</div>
               </div>
-            </div>
-          </div>
-
-          <!-- Abonnement Mensuel -->
-          <div class="card bg-base-100 shadow-xl border-2 border-secondary/30 scale-105">
-            <div class="card-body text-center">
-              <div class="badge badge-secondary badge-lg mb-4">💼 RECOMMANDÉ PRO</div>
-              <h3 class="card-title text-2xl justify-center text-secondary">Abonnement Mensuel</h3>
-              <div class="text-4xl font-bold text-secondary my-4">-20%</div>
-              <p class="text-base-content">Sur toutes vos interventions</p>
+              <h3 :class="['card-title text-2xl justify-center', offer.titleClass]">{{ offer.title }}</h3>
+              <div :class="['text-4xl font-bold my-4', offer.discountClass]">{{ offer.discount }}</div>
+              <p class="text-base-content">{{ offer.description }}</p>
               <ul class="text-sm space-y-2 mt-4 text-left">
-                <li>✓ Intervention programmée</li>
-                <li>✓ Sans engagement</li>
-                <li>✓ Résiliable à tout moment</li>
-                <li>✓ Priorité sur planning</li>
+                <li v-for="feature in offer.features" :key="feature">✓ {{ feature }}</li>
               </ul>
               <div class="card-actions justify-center mt-6">
-                <NuxtLink to="/devis" class="btn btn-secondary">Souscrire</NuxtLink>
-              </div>
-            </div>
-          </div>
-
-          <!-- Intervention Ponctuelle -->
-          <div class="card bg-base-100 shadow-xl">
-            <div class="card-body text-center">
-              <div class="badge badge-outline badge-lg mb-4">⚡ PONCTUEL</div>
-              <h3 class="card-title text-2xl justify-center">Intervention Unique</h3>
-              <div class="text-3xl font-bold my-4">Tarif standard</div>
-              <p class="text-base-content">Selon zone d'intervention</p>
-              <ul class="text-sm space-y-2 mt-4 text-left">
-                <li>✓ Intervention sous 48h</li>
-                <li>✓ Tarif transparent</li>
-                <li>✓ Qualité garantie</li>
-              </ul>
-              <div class="card-actions justify-center mt-6">
-                <NuxtLink to="/devis" class="btn btn-outline">Demander un devis</NuxtLink>
+                <NuxtLink to="/devis" :class="['btn', offer.buttonClass]">{{ offer.buttonText }}</NuxtLink>
               </div>
             </div>
           </div>
@@ -425,7 +405,124 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { socialMediaLinks } from '~/utils/socialMedia';
+
+const selectedClientType = ref<'pro' | 'particulier'>('pro')
+
+const offers = computed(() => {
+  if (selectedClientType.value === 'pro') {
+    return [
+      {
+        id: 'decouverte-pro',
+        badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-primary' },
+        title: 'Offre Découverte',
+        titleClass: 'text-primary',
+        discount: '-25%',
+        discountClass: 'text-primary',
+        description: 'Sur votre première intervention',
+        features: [
+          'Tous types de prestations',
+          'Valable toutes zones',
+          'Sans engagement'
+        ],
+        buttonText: 'J\'en profite',
+        buttonClass: 'btn-primary',
+        cardClass: 'border-primary/30'
+      },
+      {
+        id: 'fidelite-pro',
+        badge: { text: '💼 RECOMMANDÉ PRO', class: 'badge-secondary' },
+        title: 'Remise Fidélité',
+        titleClass: 'text-secondary',
+        discount: '-20%',
+        discountClass: 'text-secondary',
+        description: 'Si intervention < 2 mois de la précédente',
+        features: [
+          'Intervention programmée',
+          'Suivi personnalisé',
+          'Priorité sur planning',
+          'Facturation simplifiée'
+        ],
+        buttonText: 'Planifier',
+        buttonClass: 'btn-secondary',
+        cardClass: 'border-secondary/30 scale-105'
+      },
+      {
+        id: 'standard-pro',
+        badge: { text: '⚡ PONCTUEL', class: 'badge-outline' },
+        title: 'Intervention Unique',
+        titleClass: '',
+        discount: 'Tarif standard',
+        discountClass: '',
+        description: 'Selon zone d\'intervention',
+        features: [
+          'Intervention sous 48h',
+          'Tarif transparent',
+          'Qualité garantie'
+        ],
+        buttonText: 'Demander un devis',
+        buttonClass: 'btn-outline',
+        cardClass: ''
+      }
+    ]
+  } else {
+    return [
+      {
+        id: 'decouverte-particulier',
+        badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-primary' },
+        title: 'Offre Découverte',
+        titleClass: 'text-primary',
+        discount: '-25%',
+        discountClass: 'text-primary',
+        description: 'Sur votre première intervention',
+        features: [
+          'Intérieur et extérieur',
+          'Valable toutes zones',
+          'Sans engagement'
+        ],
+        buttonText: 'J\'en profite',
+        buttonClass: 'btn-primary',
+        cardClass: 'border-primary/30'
+      },
+      {
+        id: 'fidelite-particulier',
+        badge: { text: '🏠 RECOMMANDÉ', class: 'badge-secondary' },
+        title: 'Remise Fidélité',
+        titleClass: 'text-secondary',
+        discount: '-15%',
+        discountClass: 'text-secondary',
+        description: 'Si intervention < 6 mois de la précédente',
+        features: [
+          'Service complet',
+          'Suivi personnalisé',
+          'Flexibilité horaire',
+          'Conseils personnalisés'
+        ],
+        buttonText: 'Réserver',
+        buttonClass: 'btn-secondary',
+        cardClass: 'border-secondary/30 scale-105'
+      },
+      {
+        id: 'standard-particulier',
+        badge: { text: '⚡ PONCTUEL', class: 'badge-outline' },
+        title: 'Intervention Unique',
+        titleClass: '',
+        discount: 'Tarif standard',
+        discountClass: '',
+        description: 'Selon zone d\'intervention',
+        features: [
+          'Intervention flexible',
+          'Tarif transparent',
+          'Qualité garantie'
+        ],
+        buttonText: 'Demander un devis',
+        buttonClass: 'btn-outline',
+        cardClass: ''
+      }
+    ]
+  }
+})
 </script>
 
 <style scoped>

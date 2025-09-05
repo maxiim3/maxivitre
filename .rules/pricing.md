@@ -16,10 +16,22 @@
 
 ## 🎁 Offres Commerciales
 
-- **Offre Découverte** : -25% première intervention (tous clients)
-- **Abonnement Mensuel Pro** : -20% sans engagement 
-  - 1 passage/mois hors horaires d'ouverture
-  - Généralement tôt le matin pour ne pas gêner l'activité
+### Professionnels
+- **Offre Découverte** : -25% première intervention
+- **Remise Fidélité Pro** : -20% si intervention < 2 mois de la précédente
+  - Intervention programmée
+  - Suivi personnalisé  
+  - Priorité sur planning
+  - Facturation simplifiée
+- **Intervention Ponctuelle** : Tarif standard selon zone
+
+### Particuliers
+- **Offre Découverte** : -25% première intervention
+- **Remise Fidélité Particulier** : -15% si intervention < 6 mois de la précédente
+  - Service complet (intérieur et extérieur)
+  - Suivi personnalisé
+  - Flexibilité horaire
+  - Conseils personnalisés
 - **Intervention Ponctuelle** : Tarif standard selon zone
 
 ## 🤝 Stratégies Complémentaires

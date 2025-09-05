@@ -1,0 +1,3 @@
+- [] optimisation: homepage/hero section: l'image est longhe a charger. faut optimiser ça en destkop et mobile. priority: important
+- [] chore: beacoup de div dans le code: utiliser plus de semantiques HTML. priority: can wait
+- [] chore: extraire en composant ce qui peut l'etre pour eviter la duplication de code. priotrity: not important
