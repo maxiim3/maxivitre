@@ -27,12 +27,12 @@
               Particulier
             </label>
             <p class="text-gray-500">
-              Tarifs standards pour les particuliers
+              Particulier, propriétaire ou locataire
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Minimum de facturation : <span class="font-medium">50€</span>
               • Paiement direct
               • Intervention ponctuelle ou récurrente
+              • Tarif standard
             </div>
           </div>
         </div>
@@ -63,17 +63,14 @@
               Professionnel
             </label>
             <p class="text-gray-500">
-              Tarifs préférentiels pour les entreprises
+              Entreprise, syndic, organisme
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Remise de <span class="font-medium text-green-600">-15%</span>
-              • Minimum de facturation : <span class="font-medium">80€</span>
               • Facturation avec conditions de paiement
+              • Intervention régulière possible
+              • Tarif professionnel
             </div>
           </div>
-        </div>
-        <div class="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
-          -15%
         </div>
       </div>
     </div>

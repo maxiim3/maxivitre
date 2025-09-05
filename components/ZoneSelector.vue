@@ -71,7 +71,7 @@
               🏘️ Zone 2 - Périphérie proche
             </label>
             <p class="text-gray-500 mt-1">
-              Montpellier, Lattes, Pérols, Saint-Jean-de-Védas
+              Montpellier centre, Lattes, Mauguio, Mudaison
             </p>
             <div class="mt-2 text-xs text-gray-600">
               • Déplacement <span class="font-medium text-orange-600">+10€</span>
@@ -79,9 +79,6 @@
               • Planning étendu
             </div>
           </div>
-        </div>
-        <div class="absolute -top-2 -right-2 bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded-full">
-          +10€
         </div>
       </div>
 
@@ -110,7 +107,7 @@
               🌊 Zone 3 - Périphérie éloignée
             </label>
             <p class="text-gray-500 mt-1">
-              Palavas, Carnon, La Grande-Motte, Lunel
+              Palavas, Carnon, La Grande-Motte, Pérols
             </p>
             <div class="mt-2 text-xs text-gray-600">
               • Déplacement <span class="font-medium text-red-600">+15€</span>
@@ -118,9 +115,6 @@
               • Sur rendez-vous
             </div>
           </div>
-        </div>
-        <div class="absolute -top-2 -right-2 bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
-          +15€
         </div>
       </div>
 

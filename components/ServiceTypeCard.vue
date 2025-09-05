@@ -31,11 +31,14 @@
               Première intervention ou client non régulier
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Tarif de base
+              • Remise <span class="font-medium text-green-600">-15%</span>
               • Nettoyage complet
               • Évaluation des besoins
             </div>
           </div>
+        </div>
+        <div class="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
+          -15%
         </div>
       </div>
 
@@ -67,14 +70,11 @@
               Client habituel sans contrat récent
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Remise <span class="font-medium text-green-600">-10%</span>
+              • Tarif normal
               • Client connu
               • Nettoyage régulier
             </div>
           </div>
-        </div>
-        <div class="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
-          -10%
         </div>
       </div>
 
@@ -106,14 +106,14 @@
               Dernière intervention récente, vitres peu sales
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Remise <span class="font-medium text-blue-600">-15%</span>
+              • Programme fidélité
               • Intervention récente
               • Nettoyage d'entretien
             </div>
           </div>
         </div>
         <div class="absolute -top-2 -right-2 bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
-          -15%
+          Fidélité
         </div>
       </div>
     </div>

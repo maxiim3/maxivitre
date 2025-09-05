@@ -218,8 +218,6 @@
     <ShoppingCart 
       :windows="selectedWindows" 
       :clientType="clientType"
-      @remove="removeWindow"
-      @edit="openDrawerForEdit"
     />
     
     <!-- Modal de confirmation pour brouillon existant -->

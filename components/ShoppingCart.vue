@@ -34,24 +34,10 @@
                   </p>
                 </div>
               </div>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center">
                 <span class="text-sm font-semibold text-primary">
                   {{ calculatePrice(window) }}€
                 </span>
-                <button
-                  @click="$emit('edit', index)"
-                  class="p-2 hover:bg-blue-100 rounded-md border border-blue-200 hover:border-blue-300 transition-colors"
-                  title="Modifier cette fenêtre"
-                >
-                  <span class="text-sm text-blue-600">✏️</span>
-                </button>
-                <button
-                  @click="$emit('remove', index)"
-                  class="p-2 hover:bg-red-100 rounded-md border border-red-200 hover:border-red-300 transition-colors"
-                  title="Supprimer cette fenêtre"
-                >
-                  <span class="text-sm text-red-600">🗑️</span>
-                </button>
               </div>
             </div>
           </div>
@@ -119,22 +105,8 @@
               <span class="truncate">{{ window.name }}</span>
               <span class="text-gray-500">×{{ window.quantity }}</span>
             </div>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center">
               <span class="font-medium">{{ calculatePrice(window) }}€</span>
-              <button
-                @click="$emit('edit', index)"
-                class="p-2 hover:bg-blue-100 rounded-md border border-blue-200 hover:border-blue-300 transition-colors"
-                title="Modifier cette fenêtre"
-              >
-                <span class="text-sm text-blue-600">✏️</span>
-              </button>
-              <button
-                @click="$emit('remove', index)"
-                class="p-2 hover:bg-red-100 rounded-md border border-red-200 hover:border-red-300 transition-colors"
-                title="Supprimer cette fenêtre"
-              >
-                <span class="text-sm text-red-600">🗑️</span>
-              </button>
             </div>
           </div>
         </div>
@@ -152,8 +124,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  remove: [index: number]
-  edit: [index: number]
+  // Pas d'émissions - cart en lecture seule
 }>()
 
 const showDetails = ref(false)
