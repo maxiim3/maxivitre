@@ -6,25 +6,22 @@
     <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
       <div class="px-4 py-6 sm:px-0">
         
-        <!-- Step 1: Client Type -->
+        <!-- Step 1: Options (Client + Service + Zone) -->
         <div v-if="currentStep === 0" class="space-y-6">
           <ClientTypeSelector v-model="clientType" />
-        </div>
-        
-        <!-- Step 2: Service & Zone -->
-        <div v-else-if="currentStep === 1" class="space-y-6">
-          <ServiceTypeCard v-model="globalServiceType" />
+          <ServiceTypeCard v-model="globalServiceType" :clientType="clientType" />
           <ZoneSelector 
             :zone="globalZone" 
             :frequency="globalFrequency"
             @update:zone="globalZone = $event"
             @update:frequency="globalFrequency = $event" 
           />
-          <OptionsSelector v-model="globalOptions" />
+          <!-- OptionsSelector v-model="globalOptions" / --> 
+          <!-- Options additionnelles temporairement désactivées - hors business rules -->
         </div>
         
-        <!-- Step 3: Windows Configuration -->
-        <div v-else-if="currentStep === 2" class="space-y-6">
+        <!-- Step 2: Windows Configuration -->
+        <div v-else-if="currentStep === 1" class="space-y-6">
           <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div class="flex justify-between items-center mb-6">
               <h2 class="text-lg font-semibold text-gray-900">
@@ -64,8 +61,9 @@
           </div>
         </div>
         
-        <!-- Step 4: Summary -->
-        <div v-else-if="currentStep === 3" class="space-y-6">
+        <!-- Step 3: Summary & Export -->
+        <div v-else-if="currentStep === 2" class="space-y-6">
+          <!-- Récapitulatif -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-6">Récapitulatif de votre devis</h2>
             
@@ -73,7 +71,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div class="space-y-3">
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-500">Type de client :</span>
+                  <span class="text-gray-500">Vous êtes :</span>
                   <span class="font-medium">
                     {{ clientType === 'professionnel' ? 'Professionnel (-15%)' : 'Particulier' }}
                   </span>
@@ -86,20 +84,6 @@
                   <span class="text-gray-500">Zone :</span>
                   <span class="font-medium">{{ getZoneLabel(globalZone) }}</span>
                 </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-500">Fréquence :</span>
-                  <span class="font-medium">{{ getFrequencyLabel(globalFrequency) }}</span>
-                </div>
-              </div>
-              
-              <div v-if="hasGlobalOptions" class="space-y-2">
-                <h4 class="text-sm font-medium text-gray-900">Options sélectionnées :</h4>
-                <ul class="space-y-1 text-sm text-gray-600">
-                  <li v-if="globalOptions.cleanFrames">• Nettoyage des cadres (+20%)</li>
-                  <li v-if="globalOptions.antiLimescale">• Traitement anti-calcaire (+15%)</li>
-                  <li v-if="globalOptions.insideOutside">• Intérieur + extérieur (×1.8)</li>
-                  <li v-if="globalOptions.wasteRemoval">• Évacuation déchets (+25€)</li>
-                </ul>
               </div>
             </div>
 
@@ -119,7 +103,9 @@
                     <div>
                       <p class="text-sm font-medium">{{ window.name }}</p>
                       <p class="text-xs text-gray-500">
-                        Quantité: {{ window.quantity }} • {{ currentDirtinessLevel(window.dirtiness).label }}
+                        Quantité: {{ window.quantity }} • 
+                        {{ windowPricing.getSizeLabel(window.size) }} • 
+                        {{ windowPricing.getCleaningTypeLabel(window.cleaningType) }}
                       </p>
                     </div>
                   </div>
@@ -147,10 +133,8 @@
               </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Step 5: Export -->
-        <div v-else-if="currentStep === 4" class="space-y-6">
+          
+          <!-- Export intégré -->
           <DevisExport
             :selectedWindows="selectedWindows"
             :clientType="clientType"
@@ -181,26 +165,37 @@
           </div>
           
           <div class="flex flex-col sm:flex-row sm:justify-between space-y-3 sm:space-y-0">
-            <button 
-              v-if="currentStep > 0"
-              @click="previousStep" 
-              class="btn btn-outline order-2 sm:order-1"
-            >
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-              Précédent
-            </button>
-            <div v-else class="hidden sm:block"></div>
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 order-2 sm:order-1">
+              <button 
+                v-if="currentStep > 0"
+                @click="previousStep" 
+                class="btn btn-outline"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Précédent
+              </button>
+              <button 
+                @click="startNewDraft"
+                class="btn btn-outline btn-error"
+                :class="{ 'ml-3': currentStep > 0 }"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Recommencer
+              </button>
+            </div>
             
             <button 
-              v-if="currentStep < 4"
+              v-if="currentStep < 2"
               @click="nextStep"
               :disabled="!canProceedToNextStep"
               class="btn btn-primary order-1 sm:order-2"
               :class="{ 'btn-disabled': !canProceedToNextStep }"
             >
-              {{ currentStep === 3 ? 'Finaliser' : 'Suivant' }}
+              {{ currentStep === 1 ? 'Finaliser' : 'Suivant' }}
               <svg v-if="canProceedToNextStep" class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -211,6 +206,24 @@
     </div>
 
     <WindowDrawer v-model:isOpen="isDrawerOpen" @select="addWindow" />
+    
+    <!-- Shopping Cart -->
+    <ShoppingCart 
+      :windows="selectedWindows" 
+      :clientType="clientType"
+      @remove="removeWindow"
+    />
+    
+    <!-- Modal de confirmation pour brouillon existant -->
+    <ConfirmationModal
+      :isOpen="showDraftModal"
+      title="Un devis est déjà en cours"
+      message="Vous avez un brouillon de devis en cours. Que souhaitez-vous faire ?"
+      confirmText="Continuer"
+      cancelText="Recommencer"
+      @confirm="loadExistingDraft"
+      @cancel="startNewDraft"
+    />
   </div>
 </template>
 
@@ -246,6 +259,10 @@ const selectedWindows = ref<WindowSelection[]>([]);
 const isDrawerOpen = ref(false);
 const customerEmail = ref('');
 
+// Modal state
+const showDraftModal = ref(false);
+let pendingDraft: any = null;
+
 // Composables
 const windowPricing = useWindowPricing();
 const devisDraft = useDevisDraft();
@@ -276,7 +293,7 @@ const updateWindow = (index: number, window: WindowSelection) => {
 
 // Navigation
 const nextStep = () => {
-  if (currentStep.value < 4) {
+  if (currentStep.value < 2) { // Maintenant max 3 étapes (0,1,2)
     currentStep.value++;
   }
 };
@@ -289,14 +306,12 @@ const previousStep = () => {
 
 const canProceedToNextStep = computed(() => {
   switch (currentStep.value) {
-    case 0: // Client type - always can proceed
+    case 0: // Options (Client + Service + Zone) - always can proceed
       return true;
-    case 1: // Service & Zone - always can proceed  
-      return true;
-    case 2: // Windows - need at least one window
+    case 1: // Windows - need at least one window
       return selectedWindows.value.length > 0;
-    case 3: // Summary - always can proceed
-      return true;
+    case 2: // Summary & Export - final step, no next button
+      return false;
     default:
       return false;
   }
@@ -304,7 +319,7 @@ const canProceedToNextStep = computed(() => {
 
 const getStepValidationMessage = computed(() => {
   switch (currentStep.value) {
-    case 2:
+    case 1: // Windows step
       if (selectedWindows.value.length === 0) {
         return 'Ajoutez au moins une fenêtre pour continuer';
       }
@@ -316,12 +331,11 @@ const getStepValidationMessage = computed(() => {
 // Helper functions
 const getServiceLabel = (serviceType: ServiceType) => {
   const labels = {
-    'standard': 'Nettoyage standard',
-    'autocollants': 'Décollement autocollants',
-    'apres-travaux': 'Nettoyage après travaux', 
-    'entretien': 'Entretien régulier'
+    'nouveau-client': 'Nouveau client',
+    'entretien-standard': 'Entretien standard',
+    'entretien-recent': `Entretien récent (moins de ${clientType.value === 'professionnel' ? '2 mois' : '6 mois'})`
   };
-  return labels[serviceType] || 'Nettoyage standard';
+  return labels[serviceType] || 'Nouveau client';
 };
 
 const getZoneLabel = (zone: GeographicalZone) => {
@@ -363,6 +377,42 @@ watch([globalServiceType, globalZone, globalFrequency, globalOptions], () => {
   });
 }, { deep: true });
 
+// Modal handlers
+const loadExistingDraft = () => {
+  if (pendingDraft) {
+    clientType.value = pendingDraft.clientType;
+    globalServiceType.value = pendingDraft.globalServiceType;
+    globalZone.value = pendingDraft.globalZone;
+    globalFrequency.value = pendingDraft.globalFrequency;
+    globalOptions.value = pendingDraft.globalOptions;
+    selectedWindows.value = pendingDraft.selectedWindows;
+    customerEmail.value = pendingDraft.customerEmail;
+    currentStep.value = pendingDraft.currentStep;
+  }
+  showDraftModal.value = false;
+  pendingDraft = null;
+};
+
+const startNewDraft = () => {
+  devisDraft.clearDraft();
+  showDraftModal.value = false;
+  pendingDraft = null;
+  // Reset to initial state
+  currentStep.value = 0;
+  clientType.value = 'particulier';
+  globalServiceType.value = 'nouveau-client';
+  globalZone.value = 'zone1';
+  globalFrequency.value = 'ponctuel';
+  globalOptions.value = {
+    cleanFrames: false,
+    antiLimescale: false,
+    insideOutside: false,
+    wasteRemoval: false
+  };
+  selectedWindows.value = [];
+  customerEmail.value = '';
+};
+
 // Export handlers
 const onEmailSent = (email: string) => {
   customerEmail.value = email;
@@ -392,17 +442,8 @@ onMounted(() => {
   // Load existing draft
   const existingDraft = devisDraft.loadDraft();
   if (existingDraft) {
-    const shouldLoad = confirm('Un brouillon de devis a été trouvé. Voulez-vous le charger ?');
-    if (shouldLoad) {
-      clientType.value = existingDraft.clientType;
-      globalServiceType.value = existingDraft.globalServiceType;
-      globalZone.value = existingDraft.globalZone;
-      globalFrequency.value = existingDraft.globalFrequency;
-      globalOptions.value = existingDraft.globalOptions;
-      selectedWindows.value = existingDraft.selectedWindows;
-      customerEmail.value = existingDraft.customerEmail;
-      currentStep.value = existingDraft.currentStep;
-    }
+    pendingDraft = existingDraft;
+    showDraftModal.value = true;
   }
   
   // Setup auto-save every 30 seconds

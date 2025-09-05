@@ -1,14 +1,17 @@
 export type ClientType = 'particulier' | 'professionnel'
-export type ServiceType = 'standard' | 'autocollants' | 'apres-travaux' | 'entretien'
+export type ServiceType = 'nouveau-client' | 'entretien-standard' | 'entretien-recent'
 export type AccessibilityLevel = 'rdc' | 'etage' | 'hauteur' | 'nacelle'
 export type FrequencyType = 'ponctuel' | 'mensuel' | 'trimestriel' | 'semestriel'
 export type GeographicalZone = 'zone1' | 'zone2' | 'zone3' | 'hors-zone'
+export type WindowSize = 'petite' | 'moyenne' | 'grande'
+export type CleaningType = 'exterieur' | 'exterieur-interieur'
 
 export interface WindowType {
   id: string
   name: string
   image: string
   basePrice: number
+  description?: string
 }
 
 export interface ServiceOptions {
@@ -19,18 +22,22 @@ export interface ServiceOptions {
 }
 
 export interface WindowSelection extends WindowType {
-  // Existant
-  dirtiness: number
-  gluePercentage: number
-  height: number
+  // Configuration fenêtre
   quantity: number
-  
-  // Nouveau
-  serviceType: ServiceType
+  size: WindowSize
   accessibility: AccessibilityLevel
-  frequency: FrequencyType
+  cleaningType: CleaningType
+  
+  // Global (venant des étapes précédentes)
+  serviceType: ServiceType
   zone: GeographicalZone
-  options: ServiceOptions
+  
+  // Ancien système (garde compatibilité temporaire)
+  dirtiness?: number
+  gluePercentage?: number
+  height?: number
+  frequency?: FrequencyType
+  options?: ServiceOptions
 }
 
 export const DIRTINESS_LEVELS = [
@@ -57,9 +64,9 @@ export const FREQUENCY_DISCOUNTS = {
 }
 
 export const ZONE_SURCHARGES = {
-  zone1: 0, // Montpellier centre
-  zone2: 5, // Périphérie proche
-  zone3: 10, // Périphérie éloignée
+  zone1: 0, // Castelnau-le-Lez (priorité)
+  zone2: 10, // Périphérie proche 
+  zone3: 15, // Périphérie éloignée
   'hors-zone': 0 // Sur devis
 }
 
@@ -71,10 +78,20 @@ export const ACCESSIBILITY_COSTS = {
 }
 
 export const SERVICE_MULTIPLIERS = {
-  standard: 1,
-  autocollants: 1.5,
-  'apres-travaux': 1.8,
-  entretien: 0.9 // -10% pour entretien régulier
+  'nouveau-client': 1,
+  'entretien-standard': 0.9, // -10% pour entretien standard
+  'entretien-recent': 0.85 // -15% pour entretien récent (moins de 2/6 mois)
+}
+
+export const WINDOW_SIZE_MULTIPLIERS = {
+  petite: 0.8, // ~0.8m² 
+  moyenne: 1, // ~1.2m²
+  grande: 1.5 // ~1.8m²
+}
+
+export const CLEANING_TYPE_MULTIPLIERS = {
+  exterieur: 1,
+  'exterieur-interieur': 1.8 // +180% (ou 1.5 = +150% selon clarification)
 }
 
 export const MINIMUM_BILLING = {

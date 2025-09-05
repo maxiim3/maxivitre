@@ -1,122 +1,165 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <h2 class="text-lg font-semibold text-gray-900 mb-4">Zone géographique</h2>
-    <div class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       
-      <!-- Zone Selection -->
-      <div>
-        <label for="zone-select" class="block text-sm font-medium text-gray-700 mb-2">
-          Sélectionnez votre zone d'intervention
-        </label>
-        <select
-          id="zone-select"
-          v-model="selectedZone"
-          class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-        >
-          <option value="">-- Choisir une zone --</option>
-          <optgroup label="Montpellier Centre (tarif de base)">
-            <option value="zone1" data-communes="Montpellier Centre, Ecusson, Antigone, Comédie">
-              Zone 1 - Montpellier Centre
-            </option>
-          </optgroup>
-          <optgroup label="Périphérie proche (+5€)">
-            <option value="zone2" data-communes="Castelnau-le-Lez, Lattes, Pérols, Saint-Jean-de-Védas">
-              Zone 2 - Périphérie proche (+5€)
-            </option>
-          </optgroup>
-          <optgroup label="Périphérie éloignée (+10€)">
-            <option value="zone3" data-communes="Palavas-les-Flots, Carnon, La Grande-Motte, Lunel">
-              Zone 3 - Périphérie éloignée (+10€)
-            </option>
-          </optgroup>
-          <optgroup label="Autres">
-            <option value="hors-zone">
-              Hors zone (sur devis)
-            </option>
-          </optgroup>
-        </select>
-      </div>
-
-      <!-- Zone Info -->
-      <div v-if="selectedZone" class="bg-gray-50 rounded-lg p-4">
-        <div class="flex items-start space-x-3">
-          <div class="flex-shrink-0">
-            <span class="text-2xl">
-              {{ zoneIcon }}
-            </span>
+      <!-- Zone 1 - Castelnau-le-Lez (Priorité) -->
+      <div 
+        :class="[
+          'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
+          selectedZone === 'zone1' 
+            ? 'border-primary bg-primary/5' 
+            : 'border-gray-200 hover:border-gray-300',
+          'border-primary/30 scale-105' // Priorité pour Castelnau-le-Lez
+        ]"
+        @click="selectedZone = 'zone1'"
+      >
+        <div class="absolute -top-2 -right-2 bg-primary text-white text-xs font-medium px-2 py-1 rounded-full">
+          Priorité
+        </div>
+        <div class="flex items-start">
+          <div class="flex h-5 items-center">
+            <input
+              id="zone1"
+              type="radio"
+              value="zone1"
+              v-model="selectedZone"
+              class="radio radio-primary"
+            >
           </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-900">
-              {{ zoneInfo.name }}
-            </h3>
-            <p class="text-sm text-gray-600 mt-1">
-              {{ zoneInfo.description }}
+          <div class="ml-3 text-sm">
+            <label for="zone1" class="font-medium text-gray-900 cursor-pointer">
+              🏙️ Zone 1 - Castelnau-le-Lez
+            </label>
+            <p class="text-gray-500 mt-1">
+              Zone prioritaire - Déplacement OFFERT
             </p>
-            <div class="mt-2">
-              <span 
-                :class="[
-                  'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                  zoneInfo.cost === 0 
-                    ? 'bg-green-100 text-green-800' 
-                    : zoneInfo.cost > 0 
-                      ? 'bg-orange-100 text-orange-800'
-                      : 'bg-gray-100 text-gray-800'
-                ]"
-              >
-                {{ zoneInfo.costLabel }}
-              </span>
-            </div>
-            
-            <!-- Communes examples -->
-            <div v-if="zoneInfo.communes" class="mt-3">
-              <p class="text-xs text-gray-500">
-                <span class="font-medium">Exemples de communes :</span>
-                {{ zoneInfo.communes }}
-              </p>
+            <div class="mt-2 text-xs text-gray-600">
+              • Tarif de base
+              • Disponibilité maximale
+              • Service weekend
             </div>
           </div>
         </div>
+        <div class="absolute -top-2 -left-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
+          GRATUIT
+        </div>
       </div>
 
-      <!-- Frequency Selection -->
-      <div class="border-t pt-4">
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Fréquence d'intervention
-        </label>
-        <div class="grid grid-cols-2 gap-3">
-          <div 
-            v-for="freq in frequencies"
-            :key="freq.value"
-            :class="[
-              'relative rounded-lg border-2 p-3 cursor-pointer transition-all text-center',
-              selectedFrequency === freq.value
-                ? 'border-primary bg-primary/5' 
-                : 'border-gray-200 hover:border-gray-300'
-            ]"
-            @click="selectedFrequency = freq.value"
-          >
+      <!-- Zone 2 - Périphérie proche -->
+      <div 
+        :class="[
+          'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
+          selectedZone === 'zone2' 
+            ? 'border-primary bg-primary/5' 
+            : 'border-gray-200 hover:border-gray-300'
+        ]"
+        @click="selectedZone = 'zone2'"
+      >
+        <div class="flex items-start">
+          <div class="flex h-5 items-center">
             <input
-              :id="freq.value"
+              id="zone2"
               type="radio"
-              :value="freq.value"
-              v-model="selectedFrequency"
-              class="sr-only"
+              value="zone2"
+              v-model="selectedZone"
+              class="radio radio-primary"
             >
-            <div>
-              <label :for="freq.value" class="text-sm font-medium text-gray-900 cursor-pointer">
-                {{ freq.label }}
-              </label>
-              <p class="text-xs text-gray-500 mt-1">
-                {{ freq.description }}
-              </p>
-              <div 
-                v-if="freq.discount"
-                class="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-1.5 py-0.5 rounded-full"
-              >
-                {{ freq.discount }}
-              </div>
+          </div>
+          <div class="ml-3 text-sm">
+            <label for="zone2" class="font-medium text-gray-900 cursor-pointer">
+              🏘️ Zone 2 - Périphérie proche
+            </label>
+            <p class="text-gray-500 mt-1">
+              Montpellier, Lattes, Pérols, Saint-Jean-de-Védas
+            </p>
+            <div class="mt-2 text-xs text-gray-600">
+              • Déplacement <span class="font-medium text-orange-600">+10€</span>
+              • Prestation normale
+              • Planning étendu
             </div>
           </div>
+        </div>
+        <div class="absolute -top-2 -right-2 bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded-full">
+          +10€
+        </div>
+      </div>
+
+      <!-- Zone 3 - Périphérie éloignée -->
+      <div 
+        :class="[
+          'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
+          selectedZone === 'zone3' 
+            ? 'border-primary bg-primary/5' 
+            : 'border-gray-200 hover:border-gray-300'
+        ]"
+        @click="selectedZone = 'zone3'"
+      >
+        <div class="flex items-start">
+          <div class="flex h-5 items-center">
+            <input
+              id="zone3"
+              type="radio"
+              value="zone3"
+              v-model="selectedZone"
+              class="radio radio-primary"
+            >
+          </div>
+          <div class="ml-3 text-sm">
+            <label for="zone3" class="font-medium text-gray-900 cursor-pointer">
+              🌊 Zone 3 - Périphérie éloignée
+            </label>
+            <p class="text-gray-500 mt-1">
+              Palavas, Carnon, La Grande-Motte, Lunel
+            </p>
+            <div class="mt-2 text-xs text-gray-600">
+              • Déplacement <span class="font-medium text-red-600">+15€</span>
+              • Prestation normale
+              • Sur rendez-vous
+            </div>
+          </div>
+        </div>
+        <div class="absolute -top-2 -right-2 bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
+          +15€
+        </div>
+      </div>
+
+      <!-- Hors Zone -->
+      <div 
+        :class="[
+          'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
+          selectedZone === 'hors-zone' 
+            ? 'border-primary bg-primary/5' 
+            : 'border-gray-200 hover:border-gray-300'
+        ]"
+        @click="selectedZone = 'hors-zone'"
+      >
+        <div class="flex items-start">
+          <div class="flex h-5 items-center">
+            <input
+              id="hors-zone"
+              type="radio"
+              value="hors-zone"
+              v-model="selectedZone"
+              class="radio radio-primary"
+            >
+          </div>
+          <div class="ml-3 text-sm">
+            <label for="hors-zone" class="font-medium text-gray-900 cursor-pointer">
+              📍 Hors zone
+            </label>
+            <p class="text-gray-500 mt-1">
+              Autre commune non listée
+            </p>
+            <div class="mt-2 text-xs text-gray-600">
+              • Devis personnalisé
+              • Selon distance
+              • Contact préalable
+            </div>
+          </div>
+        </div>
+        <div class="absolute -top-2 -right-2 bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
+          Devis
         </div>
       </div>
     </div>
@@ -124,96 +167,20 @@
 </template>
 
 <script setup lang="ts">
-import type { GeographicalZone, FrequencyType } from '~/types/Windows.types'
+import type { GeographicalZone } from '~/types/Windows.types'
 
 const props = defineProps<{
   zone: GeographicalZone
-  frequency: FrequencyType
+  frequency?: any // Keep for compatibility but unused
 }>()
 
 const emit = defineEmits<{
   'update:zone': [value: GeographicalZone]
-  'update:frequency': [value: FrequencyType]
+  'update:frequency': [value: any] // Keep for compatibility but unused
 }>()
 
 const selectedZone = computed({
   get: () => props.zone,
   set: (value) => emit('update:zone', value as GeographicalZone)
-})
-
-const selectedFrequency = computed({
-  get: () => props.frequency,
-  set: (value) => emit('update:frequency', value as FrequencyType)
-})
-
-const frequencies = [
-  {
-    value: 'ponctuel',
-    label: 'Ponctuel',
-    description: 'Intervention unique',
-    discount: null
-  },
-  {
-    value: 'mensuel',
-    label: 'Mensuel',
-    description: 'Tous les mois',
-    discount: '-10%'
-  },
-  {
-    value: 'trimestriel',
-    label: 'Trimestriel',
-    description: 'Tous les 3 mois',
-    discount: '-5%'
-  },
-  {
-    value: 'semestriel',
-    label: 'Semestriel',
-    description: 'Tous les 6 mois',
-    discount: '-3%'
-  }
-]
-
-const zoneInfo = computed(() => {
-  const zones = {
-    zone1: {
-      name: 'Montpellier Centre',
-      description: 'Zone centrale avec tarif de base',
-      cost: 0,
-      costLabel: 'Tarif de base',
-      communes: 'Centre-ville, Ecusson, Antigone, Comédie'
-    },
-    zone2: {
-      name: 'Périphérie proche',
-      description: 'Communes limitrophes avec supplément modéré',
-      cost: 5,
-      costLabel: '+5€ par intervention',
-      communes: 'Castelnau-le-Lez, Lattes, Pérols, Saint-Jean-de-Védas'
-    },
-    zone3: {
-      name: 'Périphérie éloignée', 
-      description: 'Communes plus éloignées avec supplément',
-      cost: 10,
-      costLabel: '+10€ par intervention',
-      communes: 'Palavas-les-Flots, Carnon, La Grande-Motte, Lunel'
-    },
-    'hors-zone': {
-      name: 'Hors zone',
-      description: 'Tarification sur devis selon la distance',
-      cost: 0,
-      costLabel: 'Sur devis',
-      communes: null
-    }
-  }
-  return zones[selectedZone.value] || zones.zone1
-})
-
-const zoneIcon = computed(() => {
-  const icons = {
-    zone1: '🏙️',
-    zone2: '🏘️', 
-    zone3: '🌊',
-    'hors-zone': '📍'
-  }
-  return icons[selectedZone.value] || '📍'
 })
 </script>

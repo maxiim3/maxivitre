@@ -5,9 +5,11 @@ import {
   ZONE_SURCHARGES,
   ACCESSIBILITY_COSTS,
   SERVICE_MULTIPLIERS,
-  MINIMUM_BILLING
+  MINIMUM_BILLING,
+  WINDOW_SIZE_MULTIPLIERS,
+  CLEANING_TYPE_MULTIPLIERS
 } from '~/types/Windows.types'
-import type { WindowSelection, ClientType } from '~/types/Windows.types'
+import type { WindowSelection, ClientType, WindowSize, CleaningType } from '~/types/Windows.types'
 
 export const useWindowPricing = () => {
   const getDirtinessMultiplier = (level: number) => {
@@ -49,7 +51,50 @@ export const useWindowPricing = () => {
     return optionsPrice
   }
 
+  // Nouvelle logique de calcul selon feedbacks
   const calculateTotalPrice = (window: WindowSelection, clientType: ClientType = 'particulier') => {
+    if (!window) return '0.00'
+
+    const basePrice = window.basePrice ?? 8 // Prix de base par fenêtre
+    const quantity = window.quantity ?? 1
+    
+    // Nouveau système : taille de fenêtre
+    const size = window.size ?? 'moyenne'
+    const sizeMultiplier = WINDOW_SIZE_MULTIPLIERS[size] ?? 1
+    
+    // Nouveau système : nettoyage extérieur/intérieur
+    const cleaningType = window.cleaningType ?? 'exterieur'
+    const cleaningMultiplier = CLEANING_TYPE_MULTIPLIERS[cleaningType] ?? 1
+    
+    // Service type (nouveau/entretien/récent)
+    const serviceMultiplier = calculateServiceMultiplier(window.serviceType || 'nouveau-client')
+    
+    // Accessibilité 
+    const accessibilityCost = calculateAccessibilityCost(window.accessibility || 'rdc')
+    
+    // Zone géographique
+    const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
+    
+    // Calcul prix unitaire
+    let unitPrice = basePrice
+    unitPrice *= sizeMultiplier        // Taille fenêtre
+    unitPrice *= serviceMultiplier     // Type de service (nouveau/entretien)
+    unitPrice *= cleaningMultiplier    // Extérieur vs Ext+Int
+    unitPrice += accessibilityCost     // Coût accessibilité 
+    unitPrice += zoneSurcharge         // Supplément zone
+
+    // Prix total avant remises
+    let totalPrice = unitPrice * quantity
+
+    // Remise client professionnel
+    const clientMultiplier = CLIENT_MULTIPLIERS[clientType]
+    totalPrice *= clientMultiplier
+
+    return totalPrice.toFixed(2)
+  }
+
+  // Ancienne fonction gardée pour compatibilité temporaire
+  const calculateTotalPriceLegacy = (window: WindowSelection, clientType: ClientType = 'particulier') => {
     if (!window) return '0.00'
 
     const basePrice = window.basePrice ?? 0
@@ -62,7 +107,7 @@ export const useWindowPricing = () => {
     
     // Application des multiplicateurs
     unitPrice *= getDirtinessMultiplier(dirtiness)
-    unitPrice *= calculateServiceMultiplier(window.serviceType || 'standard')
+    unitPrice *= calculateServiceMultiplier(window.serviceType || 'nouveau-client')
     
     // Coûts additionnels
     const glueCost = calculateGlueCost(gluePercentage)
@@ -121,12 +166,29 @@ export const useWindowPricing = () => {
 
   const getZoneLabel = (zone: string) => {
     const labels = {
-      zone1: 'Montpellier centre',
-      zone2: 'Périphérie proche (+5€)',
-      zone3: 'Périphérie éloignée (+10€)',
+      zone1: 'Castelnau-le-Lez (priorité)',
+      zone2: 'Périphérie proche (+10€)',
+      zone3: 'Périphérie éloignée (+15€)',
       'hors-zone': 'Hors zone (sur devis)'
     }
-    return labels[zone as keyof typeof labels] || 'Montpellier centre'
+    return labels[zone as keyof typeof labels] || 'Castelnau-le-Lez'
+  }
+
+  const getSizeLabel = (size: WindowSize) => {
+    const labels = {
+      petite: 'Petite (~0.8m²)',
+      moyenne: 'Moyenne (~1.2m²)',
+      grande: 'Grande (~1.8m²)'
+    }
+    return labels[size] || 'Moyenne'
+  }
+
+  const getCleaningTypeLabel = (cleaningType: CleaningType) => {
+    const labels = {
+      exterieur: 'Extérieur uniquement',
+      'exterieur-interieur': 'Extérieur + Intérieur (+80%)'
+    }
+    return labels[cleaningType] || 'Extérieur uniquement'
   }
 
   return {
@@ -134,17 +196,22 @@ export const useWindowPricing = () => {
     getDirtinessMultiplier,
     calculateGlueCost,
     
-    // Nouvelles fonctions
+    // Nouvelles fonctions principales
     getAccessibilityCategory,
     calculateAccessibilityCost,
     calculateServiceMultiplier,
     calculateZoneSurcharge,
     calculateTotalPrice,
     calculateQuoteTotal,
+    
+    // Fonctions de labelling
     getFrequencyLabel,
     getZoneLabel,
+    getSizeLabel,
+    getCleaningTypeLabel,
     
     // Fonctions utilitaires
-    calculateOptionsPrice
+    calculateOptionsPrice,
+    calculateTotalPriceLegacy // Compatibilité temporaire
   }
 }
