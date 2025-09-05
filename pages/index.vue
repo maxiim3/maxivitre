@@ -171,18 +171,21 @@
                 <div class="p-4 bg-primary/10 rounded-xl border-l-4 border-primary">
                   <div class="flex justify-between items-center mb-2">
                     <h4 class="font-bold text-lg text-primary">Zone 1 - Castelnau-le-Lez</h4>
-                    <span class="badge badge-primary">Tarif de base</span>
+                    <div class="text-right">
+                      <div class="badge badge-primary">8€ + 0€</div>
+                      <div class="text-xs text-green-600 font-medium mt-1">Déplacement OFFERT</div>
+                    </div>
                   </div>
-                  <p class="text-sm text-gray-600">Commune prioritaire • Déplacements optimisés</p>
+                  <p class="text-sm text-gray-600">Commune prioritaire • Frais fixes seulement</p>
                 </div>
                 
                 <!-- Zone 2 -->
                 <div class="p-4 bg-secondary/10 rounded-xl border-l-4 border-secondary">
                   <div class="flex justify-between items-center mb-2">
                     <h4 class="font-bold text-lg text-secondary">Zone 2 - Communes limitrophes</h4>
-                    <span class="badge badge-secondary">+15€</span>
+                    <div class="badge badge-secondary">8€ + 10€</div>
                   </div>
-                  <div class="text-sm space-y-1">
+                  <div class="text-sm space-y-1 mb-2">
                     <div class="flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -196,15 +199,17 @@
                       <span>Vendargues, Baillargues</span>
                     </div>
                   </div>
+                  <p class="text-xs text-gray-500">Frais fixes 8€ + déplacement 10€</p>
                 </div>
 
                 <!-- Zone 3 -->
                 <div class="p-4 bg-accent/10 rounded-xl border-l-4 border-accent">
                   <div class="flex justify-between items-center mb-2">
                     <h4 class="font-bold text-lg text-accent">Zone 3 - Montpellier centre/Est</h4>
-                    <span class="badge badge-accent">+25€</span>
+                    <div class="badge badge-accent">8€ + 15€</div>
                   </div>
-                  <p class="text-sm text-gray-600">Centre-ville, Ecusson, quartiers Est</p>
+                  <p class="text-sm text-gray-600 mb-2">Centre-ville, Ecusson, quartiers Est</p>
+                  <p class="text-xs text-gray-500">Frais fixes 8€ + déplacement 15€</p>
                 </div>
               </div>
               
@@ -213,7 +218,7 @@
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span class="text-primary font-medium">Supplément transport calculé selon la distance réelle</span>
+                  <span class="text-primary font-medium">Tarif = Prestation + Frais fixes (8€) + Frais déplacement</span>
                 </div>
               </div>
             </div>
