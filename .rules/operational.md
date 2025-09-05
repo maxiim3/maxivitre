@@ -42,3 +42,4 @@
 - **Demander autorisation** avant tout commit
 - **Utiliser git add --patch** pour sélectionner les changements
 - **Messages de commit clairs** et descriptifs
+- **Interdiction stricte** : push, pull, reset, rebase, merge

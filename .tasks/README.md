@@ -10,6 +10,7 @@ Ce dossier contient toutes les tâches du projet organisées par priorité dans 
 ├── medium-priority/   # Tâches priorité moyenne
 ├── low-priority/      # Tâches basse priorité
 └── completed/         # Tâches terminées
+└── back-log/          # Tâches brouillon. Ne sont pas à faire
 ```
 
 ## Gestion des Priorités
@@ -29,6 +30,7 @@ Ce dossier contient toutes les tâches du projet organisées par priorité dans 
 ## Format des Tâches
 
 Chaque tâche suit le format `XXXX-type-description.md` où :
+
 - `XXXX` : Numéro séquentiel (ex: 0001, 0002...)
 - `type` : feature, chore, refactor, etc.
 - `description` : Description courte en kebab-case
