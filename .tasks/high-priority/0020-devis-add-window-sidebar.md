@@ -1,0 +1,1 @@
+dans la side bar, respecter les regles metiers de `business-rules.config.ts` et `.rules/`. consommer les constant du fichier de configuration. revoir les sections et options dont certaines ne sont pas a jour ou depreciés.
