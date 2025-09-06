@@ -218,13 +218,13 @@
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Le Crès, Jacou, Clapiers</span>
+                      <span>Le Crès, Jacou</span>
                     </div>
                     <div class="flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Vendargues, Baillargues</span>
+                      <span>Montpellier Pompignane, Millénaire, Aiguelongue</span>
                     </div>
                   </div>
                   <p class="text-xs text-gray-500 mb-3">Frais fixes 8€ + déplacement 10€ + prestation</p>
@@ -233,9 +233,22 @@
                 <!-- Zone 3 -->
                 <div class="p-4 bg-accent/10 rounded-xl border-l-4 border-accent">
                   <div class="flex justify-between items-center mb-2">
-                    <h4 class="font-bold text-lg text-accent">Zone 3 - Montpellier centre/Est</h4>
+                    <h4 class="font-bold text-lg text-accent">Zone 3 - Secteur étendu</h4>
                   </div>
-                  <p class="text-sm text-gray-600 mb-2">Centre-ville, Ecusson, quartiers Est</p>
+                  <div class="text-sm space-y-1 mb-2">
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Clapiers, Vendargues</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Montpellier Facultés, Antigone, Port-Marianne, Ecusson</span>
+                    </div>
+                  </div>
                   <p class="text-xs text-gray-500 mb-3">Frais fixes 8€ + déplacement 15€ + prestation</p>
                 </div>
               </div>
