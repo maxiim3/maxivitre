@@ -1,0 +1,198 @@
+================================================================================
+                    RÈGLES MÉTIERS EXTRAITES - MAXIVITRE
+================================================================================
+
+SOURCE: Analyse du codebase Nuxt 3 - Site nettoyage vitres MaxiVitre
+DATE: 2025-09-06
+SCOPE: Business rules, pricing, fidélité, contraintes techniques
+
+================================================================================
+1. RÈGLES DE PRICING (CŒUR MÉTIER)
+================================================================================
+
+1.1 PRIX DE BASE
+- Prix unitaire par fenêtre: 8€ (types/Windows.types.ts:58)
+- Prix standard documentation: 2€/m² (cohérent si ~4m²/fenêtre)
+
+1.2 MULTIPLICATEURS TAILLE FENÊTRE (types/Windows.types.ts:86-90)
+- Petite (~0.8m²): x0.8
+- Moyenne (~1.2m²): x1.0 (référence)
+- Grande (~1.8m²): x1.5
+
+1.3 MULTIPLICATEURS NETTOYAGE (types/Windows.types.ts:92-95)
+- Extérieur uniquement: x1.0
+- Extérieur + Intérieur: x1.8 (+80%)
+
+1.4 MULTIPLICATEURS CLIENT (types/Windows.types.ts:54-57)
+- Particulier: x1.0 (tarif normal)
+- Professionnel: x0.85 (-15% réduction)
+
+1.5 MULTIPLICATEURS SERVICE (types/Windows.types.ts:80-84)
+- Nouveau client: x0.85 (-15% promotion acquisition)
+- Entretien standard: x1.0 (tarif normal)
+- Entretien récent: x1.0 (tarif normal)
+
+1.6 COÛTS ACCESSIBILITÉ (types/Windows.types.ts:73-78)
+- Rez-de-chaussée: +0€
+- Étage (échelle): +10€
+- Grande hauteur: +25€
+- Nacelle requise: +50€
+
+1.7 SURCHARGES ZONES GÉOGRAPHIQUES (types/Windows.types.ts:66-71)
+- Zone 1 (Castelnau-le-Lez): +0€
+- Zone 2 (Périphérie proche): +10€
+- Zone 3 (Périphérie éloignée): +15€
+- Hors zone: Sur devis (+0€ dans le code)
+
+1.8 MINIMUMS DE FACTURATION (types/Windows.types.ts:97-100)
+- Particulier: 50€ minimum
+- Professionnel: 80€ minimum
+
+================================================================================
+2. RÈGLES LEGACY (SYSTÈME ANCIEN - COMPATIBILITÉ TEMPORAIRE)
+================================================================================
+
+2.1 NIVEAUX DE SALETÉ (types/Windows.types.ts:43-52)
+- 8 niveaux de saleté avec multiplicateurs:
+  * Peu sale: x1.0
+  * Légèrement sale: x1.2
+  * Modérément sale: x1.4
+  * Assez sale: x1.6
+  * Très sale: x1.8
+  * Extrêmement sale: x2.0
+  * Très encrassé: x2.3
+  * Restauration nécessaire: x2.5
+
+2.2 REMISES FRÉQUENCE (types/Windows.types.ts:59-64)
+- Ponctuel: 0% de remise
+- Mensuel: -10%
+- Trimestriel: -5%
+- Semestriel: -3%
+
+2.3 CALCUL COLLE (useWindowPricing.ts:19-22)
+- Maximum colle: 20€
+- Calcul: (pourcentage / 100) * 20€ * 2, arrondi à 0.5€
+
+================================================================================
+3. RÈGLES OPTIONS ET SERVICES 
+================================================================================
+
+3.1 OPTIONS SERVICES (useWindowPricing.ts:46-52)
+- Nettoyage cadres: +20% du tarif total
+- Anti-calcaire: +15% du tarif total  
+- Évacuation déchets: +25€ forfait fixe
+
+3.2 SYSTÈME LEGACY OPTIONS (useWindowPricing.ts:120-126)
+- Nettoyage cadres: +20%
+- Anti-calcaire: +15%
+- Intérieur+Extérieur: x1.8 (majoration 180%)
+
+================================================================================
+4. RÈGLES BUSINESS ET FIDÉLITÉ (Cohérence avec documentation .rules/)
+================================================================================
+
+4.1 RÈGLES DOCUMENTÉES (.rules/pricing.md)
+- Offre Découverte: -25% première intervention
+- Remise Fidélité Pro: -20% si intervention < 2 mois
+- Remise Fidélité Particulier: -15% si intervention < 6 mois
+- Remise Mutualisation: Documentée mais NON IMPLÉMENTÉE
+
+4.2 RÈGLES APPLIQUÉES DANS LE CODE
+- Nouveau client: -15% (au lieu de -25% documenté)
+- Professionnel: -15% global (au lieu de -20% fidélité)
+
+4.3 INCOHÉRENCES IDENTIFIÉES
+⚠️  Remise nouveau client: -25% (docs) vs -15% (code)
+⚠️  Remise pros fidélité: -20% (docs) vs -15% globale (code)
+⚠️  Remise mutualisation: documentée mais absente du code
+⚠️  Offres découverte: documentées mais non appliquées automatiquement
+
+================================================================================
+5. ZONES GÉOGRAPHIQUES ET CIBLAGE
+================================================================================
+
+5.1 ZONES SERVICE (useSchemas.ts:77-113)
+- Zone principale: Castelnau-le-Lez
+- Zone 2: Le Crès, Jacou, Clapiers, Vendargues
+- Zone 3: Baillargues, Montpellier
+- Frais fixes documentés: 8€ (assurance, matériel pro)
+
+5.2 INFORMATIONS ENTREPRISE (useSchemas.ts:44-51)
+- Nom: MaxiVitre
+- Téléphone: +33778818583
+- Email: contact@maxivitre.fr
+- Spécialité: Nettoyage extérieur commerces
+- Fondation: 2024
+- Site: https://maxivitre.fr
+
+================================================================================
+6. TYPES DE FENÊTRES ET SERVICES
+================================================================================
+
+6.1 TYPES FENÊTRES SUPPORTÉES (WindowDrawer.vue - basePrice: 8€)
+- Fenêtre standard
+- Fenêtre de plein-pied
+- Porte-fenêtre  
+- Baie vitrée
+- Fenêtre de toit
+- Prix uniforme: 8€ base pour tous types
+
+================================================================================
+7. CONTRAINTES TECHNIQUES ET UI
+================================================================================
+
+7.1 LIMITES INTERFACE (pages/devis.vue)
+- Minimum quantité fenêtre: 1
+- Maximum quantité par fenêtre: 50 (inféré des validations)
+- Minimum facturation affiché: 50€ (particulier) / 80€ (pro)
+
+7.2 TEMPORISATIONS (DevisExport.vue:139)
+- Délai génération export: 1.5 secondes (timeout artificiel)
+
+7.3 CALCUL PROGRESSION (ProgressStepper.vue:7,12)
+- Calcul pourcentage: ((étape courante + 1) / total étapes) * 100
+- Affichage arrondi
+
+================================================================================
+8. RÈGLES MÉTIER NON IMPLÉMENTÉES (Documentation .rules/)
+================================================================================
+
+8.1 OFFRES COMMERCIALES À IMPLÉMENTER
+- Système d'offres découverte automatique (-25%)
+- Gestion fidélité avec historique client
+- Remise mutualisation pour commerces groupés
+- Abonnements avec tarifs préférentiels
+
+8.2 CONTRAINTES BUSINESS DOCUMENTÉES
+- Minimum facturation: 50€ particuliers, 80€ pros ✅ IMPLÉMENTÉ
+- Devis valable: 30 jours (NON IMPLÉMENTÉ)
+- Acompte: 30% pour travaux > 500€ (NON IMPLÉMENTÉ)
+- Délai intervention: 48h à 15 jours (NON IMPLÉMENTÉ)
+
+================================================================================
+9. ARCHITECTURE ACTUELLE
+================================================================================
+
+9.1 FICHIERS SOURCES RULES
+- types/Windows.types.ts: Constantes et types métier
+- composables/useWindowPricing.ts: Logique de calcul prix
+- .rules/: Documentation business (5 fichiers md)
+- useSchemas.ts: Informations entreprise et SEO
+
+9.2 LOGIQUES DE CALCUL
+- Nouvelle logique: calculateTotalPrice() - système modulaire
+- Ancienne logique: calculateTotalPriceLegacy() - compatibilité
+- Auto-détection minimum facturation par type client
+
+================================================================================
+RÉSUMÉ EXÉCUTIF
+================================================================================
+
+RÈGLES IDENTIFIÉES: 47 règles métiers réparties en 8 domaines
+INCOHÉRENCES: 4 écarts entre documentation et implémentation
+SYSTÈME: Hybride nouveau/legacy avec migration progressive
+PRIORITÉ: Harmoniser les remises et implémenter les offres manquantes
+
+Le système actuel fonctionne mais présente des incohérences entre la 
+documentation business et l'implémentation technique qui nécessitent 
+une harmonisation.
