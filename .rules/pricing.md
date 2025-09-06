@@ -11,8 +11,8 @@
 | Zone | Secteur | Frais fixes | Déplacement | Total min |
 |------|---------|-------------|-------------|-----------|
 | **Zone 1** | Castelnau-le-Lez | 8€ | 0€ | 8€ |
-| **Zone 2** | Communes limitrophes | 8€ | +10€ | 18€ |
-| **Zone 3** | Montpellier centre/Est | 8€ | +15€ | 23€ |
+| **Zone 2** | Le Crès, Jacou, Montpellier Pompignane, Millénaire, Aiguelongue | 8€ | +10€ | 18€ |
+| **Zone 3** | Clapiers, Vendargues, Montpellier Facultés, Antigone, Port-Marianne, Ecusson | 8€ | +15€ | 23€ |
 
 ## 🎁 Offres Commerciales
 

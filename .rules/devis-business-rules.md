@@ -31,12 +31,6 @@ La page devis existante permet de :
 - **Zone 3** : Périphérie éloignée (+10€)
 - **Hors zone** : Sur devis
 
-### 5. Options Additionnelles
-- **Nettoyage des cadres** : +20% du tarif vitre
-- **Traitement anti-calcaire** : +15% du tarif vitre  
-- **Nettoyage intérieur/extérieur** : x2 le tarif de base
-- **Évacuation déchets** : Forfait selon volume
-
 ### 6. Contraintes Métier
 - **Minimum de facturation** : 50€ pour les particuliers, 80€ pour les professionnels
 - **Devis valable** : 30 jours
