@@ -10,19 +10,19 @@ This is a Nuxt 3 website for MaxiVitre, a professional window cleaning service b
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Run development server (accessible on all network interfaces)
-npm run dev
+bun run dev
 
 # Build for production
-npm run build
+bun run build
 
 # Preview production build
-npm run preview
+bun run preview
 
 # Generate static site
-npm run generate
+bun run generate
 ```
 
 ## Architecture
@@ -33,18 +33,6 @@ npm run generate
 - **Styling**: Tailwind CSS with DaisyUI component library
 - **Fonts**: Google Fonts (KoHo family) via @nuxt/fonts module
 
-### Project Structure
-- `pages/`: Page components with file-based routing
-  - `index.vue`: Main landing page with hero, service areas, and contact sections
-  - `devis.vue`: Quote/estimate calculator page
-- `components/`: Reusable Vue components
-  - Logo components: `TheLogo.vue`, `TheLogoCover.vue`, `TheLogoRounded.vue`
-  - UI components: `TheFooter.vue`, `WindowCard.vue`, `WindowDrawer.vue`, `ScrollDown.vue`
-- `composables/`: Vue composables for shared logic
-  - `useWindowPricing.ts`: Pricing calculation logic
-- `types/`: TypeScript type definitions
-  - `window.ts`: Window service types and pricing configurations
-- `app.vue`: Root component with global footer and theme setup
 
 ### Styling Configuration
 - Custom DaisyUI theme "mytheme" defined in `tailwind.config.js`
@@ -68,3 +56,11 @@ npm run generate
 - use bun instead of node
 - never mention time estimation. talk in sprint points
 - memory on creer chaque tache dans un fichier séparé
+
+## Git & Development Rules
+
+### Git & Commits
+- **Demander autorisation** avant tout commit
+- **Utiliser git add --patch** pour sélectionner les changements
+- **Messages de commit clairs** et descriptifs
+- **Interdiction stricte** : push, pull, reset, rebase, merge

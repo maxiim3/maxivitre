@@ -1,18 +1,23 @@
 # Structure Tarifaire MaxiVitre
 
-## 💰 Prix de Base
+## 💰 Prix de Base par Fenêtre
 
-- **2€/m² standard** (nettoyage extérieur)
-- **Suppléments selon conditions** : hauteur, accès difficile, surfaces très sales/lettrines
-- **Frais fixes** : 8€ (assurance, matériel pro, qualité)
+- **Petites fenêtres (< 1m²)** : 2€ (fenêtres standard)
+- **Moyennes fenêtres (1-2m²)** : 4€ (portes-fenêtres, fenêtres de plein-pied)
+- **Grandes fenêtres (> 2m²)** : 6€ (baies vitrées)
+
+## 🏠 Nettoyage Intérieur
+
+- **Particuliers** : +150% par fenêtre (extérieur + intérieur)
+- **Professionnels** : +180% par fenêtre (extérieur + intérieur)
 
 ## 📍 Zones Géographiques
 
-| Zone | Secteur | Frais fixes | Déplacement | Total min |
-|------|---------|-------------|-------------|-----------|
-| **Zone 1** | Castelnau-le-Lez | 8€ | 0€ | 8€ |
-| **Zone 2** | Le Crès, Jacou, Montpellier Pompignane, Millénaire, Aiguelongue | 8€ | +10€ | 18€ |
-| **Zone 3** | Clapiers, Vendargues, Montpellier Facultés, Antigone, Port-Marianne, Ecusson | 8€ | +15€ | 23€ |
+| Zone | Secteur | Frais déplacement |
+|------|---------|-------------------|
+| **Zone 1** | Castelnau-le-Lez | 0€ (zone priorité) |
+| **Zone 2** | Le Crès, Jacou, Montpellier Pompignane, Millénaire, Aiguelongue | +10€ |
+| **Zone 3** | Clapiers, Vendargues, Montpellier Facultés, Antigone, Port-Marianne, Ecusson | +15€ |
 
 ## 🎁 Offres Commerciales
 

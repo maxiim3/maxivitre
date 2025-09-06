@@ -36,10 +36,10 @@
 - **Intervention sans gêne** (hors horaires d'ouverture)
 - **Tarification transparente** (frais fixes + déplacement)
 
-## 🔧 Règles de Développement
+## 🔧 Contraintes Techniques
 
-### Git & Commits
-- **Demander autorisation** avant tout commit
-- **Utiliser git add --patch** pour sélectionner les changements
-- **Messages de commit clairs** et descriptifs
-- **Interdiction stricte** : push, pull, reset, rebase, merge
+### Interface Devis
+- **Quantités** : 1 à 50 fenêtres par ligne
+- **Export PDF** : Délai génération 1.5s
+- **Validité** : Devis valable 30 jours
+- **Auto-save** : Brouillons sauvés automatiquement
