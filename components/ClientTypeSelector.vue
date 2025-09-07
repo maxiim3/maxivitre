@@ -27,12 +27,12 @@
               Particulier
             </label>
             <p class="text-gray-500">
-              Particulier, propriétaire ou locataire
+              Propriétaire, locataire, résidence privée
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Paiement direct
-              • Intervention ponctuelle ou récurrente
-              • Tarif standard
+              • Paiement direct à l'intervention
+              • Interventions ponctuelles ou récurrentes
+              • Tarif particulier standard
             </div>
           </div>
         </div>
@@ -63,12 +63,12 @@
               Professionnel
             </label>
             <p class="text-gray-500">
-              Entreprise, syndic, organisme
+              Entreprises, agences, syndics, organismes
             </p>
             <div class="mt-2 text-xs text-gray-600">
               • Facturation avec conditions de paiement
-              • Intervention régulière possible
-              • Tarif professionnel
+              • Contrats d'entretien régulier privilégiés
+              • Priorité commerces et agences
             </div>
           </div>
         </div>
@@ -87,6 +87,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: ClientType]
 }>()
+
+const { businessRules } = useBusinessRules()
 
 const selectedType = computed({
   get: () => props.modelValue,

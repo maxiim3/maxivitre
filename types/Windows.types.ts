@@ -94,7 +94,3 @@ export const CLEANING_TYPE_MULTIPLIERS = {
   'exterieur-interieur': 1.8 // +180% (ou 1.5 = +150% selon clarification)
 }
 
-export const MINIMUM_BILLING = {
-  particulier: 50,
-  professionnel: 80
-}

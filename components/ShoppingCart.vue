@@ -59,9 +59,6 @@
           <span class="text-base font-semibold text-gray-900">Total</span>
           <span class="text-lg font-bold text-primary">{{ grandTotal }}€</span>
         </div>
-        <p class="text-xs text-gray-500 mt-1">
-          (Minimum {{ clientType === 'professionnel' ? '80€' : '50€' }} appliqué)
-        </p>
       </div>
     </div>
   </div>
@@ -87,9 +84,6 @@
           </div>
           <div class="text-right">
             <div class="text-lg font-bold text-primary">{{ grandTotal }}€</div>
-            <div class="text-xs text-gray-500">
-              min. {{ clientType === 'professionnel' ? '80€' : '50€' }}
-            </div>
           </div>
         </div>
 

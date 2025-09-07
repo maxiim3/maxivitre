@@ -5,7 +5,6 @@ import {
   ZONE_SURCHARGES,
   ACCESSIBILITY_COSTS,
   SERVICE_MULTIPLIERS,
-  MINIMUM_BILLING,
   WINDOW_SIZE_MULTIPLIERS,
   CLEANING_TYPE_MULTIPLIERS
 } from '~/types/Windows.types'
@@ -149,9 +148,7 @@ export const useWindowPricing = () => {
       return sum + parseFloat(calculateTotalPrice(window, clientType))
     }, 0)
 
-    // Application du minimum de facturation
-    const minimum = MINIMUM_BILLING[clientType]
-    return Math.max(total, minimum).toFixed(2)
+    return total.toFixed(2)
   }
 
   const getFrequencyLabel = (frequency: string) => {

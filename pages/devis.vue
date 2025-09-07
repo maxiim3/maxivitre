@@ -16,6 +16,7 @@
             @update:zone="globalZone = $event"
             @update:frequency="globalFrequency = $event" 
           />
+          <AccessibilitySelector v-model="globalAccessibility" />
           <!-- OptionsSelector v-model="globalOptions" / --> 
           <!-- Options additionnelles temporairement désactivées - hors business rules -->
         </div>
@@ -49,14 +50,11 @@
             </div>
 
             <div v-else>
-              <p class="text-sm text-gray-600 mb-4">
-                Gérez vos fenêtres via le panier sur la droite (desktop) ou en bas (mobile).
-              </p>
               <div class="text-center py-8">
                 <div class="text-4xl mb-2">✅</div>
                 <p class="text-lg font-medium text-gray-900">{{ selectedWindows.length }} fenêtre{{ selectedWindows.length > 1 ? 's' : '' }} ajoutée{{ selectedWindows.length > 1 ? 's' : '' }}</p>
                 <p class="text-sm text-gray-500 mt-2">
-                  Utilisez le panier pour modifier ou supprimer vos fenêtres
+                  Vos fenêtres sont configurées et prêtes pour le devis
                 </p>
               </div>
             </div>
@@ -124,9 +122,6 @@
                 <div class="flex justify-between items-center">
                   <div>
                     <p class="text-lg font-semibold text-gray-900">Total du devis</p>
-                    <p class="text-sm text-gray-500">
-                      (Minimum {{ clientType === 'professionnel' ? '80€' : '50€' }} appliqué)
-                    </p>
                   </div>
                   <div class="text-2xl font-bold text-primary">
                     {{ grandTotal }}€
@@ -214,11 +209,6 @@
       @select="editingWindowIndex !== null ? updateWindow(editingWindowIndex, $event) : addWindow($event)" 
     />
     
-    <!-- Shopping Cart -->
-    <ShoppingCart 
-      :windows="selectedWindows" 
-      :clientType="clientType"
-    />
     
     <!-- Modal de confirmation pour brouillon existant -->
     <ConfirmationModal
@@ -241,7 +231,8 @@ import type {
   ServiceType, 
   GeographicalZone, 
   FrequencyType,
-  ServiceOptions 
+  ServiceOptions,
+  AccessibilityLevel
 } from "~/types/Windows.types";
 import { DIRTINESS_LEVELS } from "~/types/Windows.types";
 
@@ -253,6 +244,7 @@ const clientType = ref<ClientType>('particulier');
 const globalServiceType = ref<ServiceType>('standard');
 const globalZone = ref<GeographicalZone>('zone1');
 const globalFrequency = ref<FrequencyType>('ponctuel');
+const globalAccessibility = ref<AccessibilityLevel>('hauteur_homme');
 const globalOptions = ref<ServiceOptions>({
   cleanFrames: false,
   antiLimescale: false,
@@ -283,7 +275,7 @@ const addWindow = (window: WindowType) => {
     height: 1.5,
     quantity: 1,
     serviceType: globalServiceType.value,
-    accessibility: 'rdc',
+    accessibility: globalAccessibility.value,
     frequency: globalFrequency.value,
     zone: globalZone.value,
     options: { ...globalOptions.value }
@@ -387,11 +379,12 @@ const hasAnyOptions = computed(() => {
 });
 
 // Auto-apply global settings to new windows
-watch([globalServiceType, globalZone, globalFrequency, globalOptions], () => {
+watch([globalServiceType, globalZone, globalFrequency, globalAccessibility, globalOptions], () => {
   selectedWindows.value.forEach(window => {
     window.serviceType = globalServiceType.value;
     window.zone = globalZone.value;
     window.frequency = globalFrequency.value;
+    window.accessibility = globalAccessibility.value;
     window.options = { ...globalOptions.value };
   });
 }, { deep: true });
@@ -403,6 +396,7 @@ const loadExistingDraft = () => {
     globalServiceType.value = pendingDraft.globalServiceType;
     globalZone.value = pendingDraft.globalZone;
     globalFrequency.value = pendingDraft.globalFrequency;
+    globalAccessibility.value = pendingDraft.globalAccessibility || 'hauteur_homme';
     globalOptions.value = pendingDraft.globalOptions;
     selectedWindows.value = pendingDraft.selectedWindows;
     customerEmail.value = pendingDraft.customerEmail;
@@ -422,6 +416,7 @@ const startNewDraft = () => {
   globalServiceType.value = 'nouveau-client';
   globalZone.value = 'zone1';
   globalFrequency.value = 'ponctuel';
+  globalAccessibility.value = 'hauteur_homme';
   globalOptions.value = {
     cleanFrames: false,
     antiLimescale: false,
@@ -450,6 +445,7 @@ const getCurrentDraftState = () => ({
   globalServiceType: globalServiceType.value,
   globalZone: globalZone.value,
   globalFrequency: globalFrequency.value,
+  globalAccessibility: globalAccessibility.value,
   globalOptions: globalOptions.value,
   selectedWindows: selectedWindows.value,
   customerEmail: customerEmail.value,

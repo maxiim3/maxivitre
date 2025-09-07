@@ -3,116 +3,86 @@
     <h2 class="text-lg font-semibold text-gray-900 mb-4">Type de service</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       
-      <!-- Nouveau Client -->
       <div 
+        v-for="option in serviceOptions" 
+        :key="option.id"
         :class="[
           'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
-          selectedService === 'nouveau-client' 
-            ? 'border-primary bg-primary/5' 
-            : 'border-gray-200 hover:border-gray-300'
+          selectedService === option.id && option.id === 'nouveau-client'
+            ? 'border-warning bg-warning/5'
+            : selectedService === option.id && option.id === 'entretien-recent' && option.discount.rate > 0
+            ? 'border-primary bg-primary/5'
+            : selectedService === option.id
+            ? 'border-gray-400 bg-gray-50'
+            : 'border-gray-200 hover:border-gray-300',
+          option.id === 'nouveau-client' ? 'border-warning/30 shadow-warning/20' : '',
+          option.id === 'entretien-recent' && option.discount.rate > 0 ? 'border-primary/30 shadow-primary/20' : ''
         ]"
-        @click="selectService('nouveau-client')"
+        @click="selectService(option.id)"
       >
         <div class="flex items-start">
           <div class="flex h-5 items-center">
             <input
-              id="nouveau-client"
+              :id="option.id"
               type="radio"
-              value="nouveau-client"
+              :value="option.id"
               v-model="selectedService"
               class="radio radio-primary"
             >
           </div>
           <div class="ml-3 text-sm">
-            <label for="nouveau-client" class="font-medium text-gray-900 cursor-pointer">
-              🆕 Je suis nouveau client
+            <label :for="option.id" class="font-medium text-gray-900 cursor-pointer">
+              <span v-if="option.id === 'nouveau-client'">🆕</span>
+              <span v-else-if="option.id === 'entretien-recent'">⚡</span>
+              <span v-else>🔄</span>
+              {{ option.label }}
             </label>
             <p class="text-gray-500 mt-1">
-              Première intervention ou client non régulier
+              {{ option.description }}
             </p>
             <div class="mt-2 text-xs text-gray-600">
-              • Remise <span class="font-medium text-green-600">-15%</span>
-              • Nettoyage complet
-              • Évaluation des besoins
+              <div v-if="option.discount.rate > 0">
+                • Remise <span class="font-medium text-green-600">-{{ option.discount.percentage }}%</span>
+              </div>
+              <div v-else>
+                • Tarif normal
+              </div>
+              <div v-if="option.id === 'nouveau-client'">
+                • Nettoyage complet
+                • Évaluation des besoins
+              </div>
+              <div v-else-if="option.id === 'entretien-recent'">
+                • Programme fidélité
+                • Intervention récente
+                • Nettoyage d'entretien
+              </div>
+              <div v-else>
+                • Client connu
+                • Nettoyage régulier
+              </div>
             </div>
           </div>
         </div>
-        <div class="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
-          -15%
+        
+        <!-- Badge discount pour nouveau client -->
+        <div 
+          v-if="option.id === 'nouveau-client'" 
+          class="absolute -top-2 -right-2 badge badge-warning text-xs font-medium"
+        >
+          -{{ option.discount.percentage }}%
         </div>
-      </div>
-
-      <!-- Entretien Standard -->
-      <div 
-        :class="[
-          'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
-          selectedService === 'entretien-standard' 
-            ? 'border-primary bg-primary/5' 
-            : 'border-gray-200 hover:border-gray-300'
-        ]"
-        @click="selectService('entretien-standard')"
-      >
-        <div class="flex items-start">
-          <div class="flex h-5 items-center">
-            <input
-              id="entretien-standard"
-              type="radio"
-              value="entretien-standard"
-              v-model="selectedService"
-              class="radio radio-primary"
-            >
-          </div>
-          <div class="ml-3 text-sm">
-            <label for="entretien-standard" class="font-medium text-gray-900 cursor-pointer">
-              🔄 Entretien standard
-            </label>
-            <p class="text-gray-500 mt-1">
-              Client habituel sans contrat récent
-            </p>
-            <div class="mt-2 text-xs text-gray-600">
-              • Tarif normal
-              • Client connu
-              • Nettoyage régulier
-            </div>
-          </div>
+        
+        <!-- Badge fidélité pour entretien récent -->
+        <div 
+          v-if="option.id === 'entretien-recent' && option.discount.rate > 0" 
+          class="absolute -top-2 -right-2 badge badge-primary text-xs font-medium"
+        >
+          -{{ option.discount.percentage }}%
         </div>
-      </div>
-
-      <!-- Entretien Récent -->
-      <div 
-        :class="[
-          'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
-          selectedService === 'entretien-recent' 
-            ? 'border-primary bg-primary/5' 
-            : 'border-gray-200 hover:border-gray-300'
-        ]"
-        @click="selectService('entretien-recent')"
-      >
-        <div class="flex items-start">
-          <div class="flex h-5 items-center">
-            <input
-              id="entretien-recent"
-              type="radio"
-              value="entretien-recent"
-              v-model="selectedService"
-              class="radio radio-primary"
-            >
-          </div>
-          <div class="ml-3 text-sm">
-            <label for="entretien-recent" class="font-medium text-gray-900 cursor-pointer">
-              ⚡ Entretien de moins de {{ clientType === 'professionnel' ? '2 mois' : '6 mois' }}
-            </label>
-            <p class="text-gray-500 mt-1">
-              Dernière intervention récente, vitres peu sales
-            </p>
-            <div class="mt-2 text-xs text-gray-600">
-              • Programme fidélité
-              • Intervention récente
-              • Nettoyage d'entretien
-            </div>
-          </div>
-        </div>
-        <div class="absolute -top-2 -right-2 bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
+        <div 
+          v-else-if="option.id === 'entretien-recent'" 
+          class="absolute -top-2 -right-2 badge badge-primary text-xs font-medium"
+        >
           Fidélité
         </div>
       </div>
@@ -132,10 +102,14 @@ const emit = defineEmits<{
   'update:modelValue': [value: ServiceType]
 }>()
 
+const { getServiceOptions } = useBusinessRules()
+
 const selectedService = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
 })
+
+const serviceOptions = computed(() => getServiceOptions(props.clientType))
 
 const selectService = (type: ServiceType) => {
   selectedService.value = type

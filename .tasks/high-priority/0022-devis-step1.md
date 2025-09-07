@@ -138,6 +138,30 @@ Corriger et moderniser l'étape 1 du système de devis en mettant à jour le zon
 
 **High** - Première impression critique du tunnel de devis
 
+## Status
+
+**COMPLETED** ✅ - 07/09/2025
+
+### Résultats Obtenus
+
+- ✅ **Composable useBusinessRules()** créé pour centralisation règles métier
+- ✅ **ServiceTypeCard** : Discount -15% → -25% corrigé, styles alignés home page  
+- ✅ **ZoneSelector** : Rebuild avec vraies zones service (business-rules.config.ts)
+- ✅ **AccessibilitySelector** : Mapping 'etage' → 'echelle' + business rules
+- ✅ **ClientTypeSelector** : Descriptions business révisées (focus entreprises/agences)
+- ✅ **Nettoyage complet minimums fictifs** (50€/80€) dans tout le système
+- ✅ **Suppression Shopping Cart** de la page devis
+- ✅ **Architecture**: 100% Single Source of Truth depuis business-rules.config.ts
+- ✅ **0 constantes hardcodées** dans Step 1
+- ✅ **Cohérence UI/UX** avec page d'accueil (couleurs, badges)
+
+### Impact Business
+
+- **Exactitude tarifaire** : Fin des discordances prix Step 1 vs calculs finaux
+- **Zonage réel** : 7 vraies communes de service vs zones fictives  
+- **Transparence** : Remises et conditions business clairement affichées
+- **Maintienabilité** : Modifications business sans code (just config)
+
 ## Sprint Points
 
 **Total** : 12 points
