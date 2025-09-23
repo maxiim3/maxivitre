@@ -50,44 +50,62 @@ export const useWindowPricing = () => {
     return optionsPrice
   }
 
-  // Nouvelle logique de calcul selon feedbacks
+  // Nouvelle logique de calcul selon les règles métier centralisées
   const calculateTotalPrice = (window: WindowSelection, clientType: ClientType = 'particulier') => {
     if (!window) return '0.00'
 
-    const basePrice = window.basePrice ?? 8 // Prix de base par fenêtre
     const quantity = window.quantity ?? 1
-    
-    // Nouveau système : taille de fenêtre
+
+    // Système basé sur 2€/m² selon les règles métier
     const size = window.size ?? 'moyenne'
-    const sizeMultiplier = WINDOW_SIZE_MULTIPLIERS[size] ?? 1
-    
+    const sizeMultipliers = {
+      petite: 0.8,   // ~0.8m² = 1.6€
+      moyenne: 1.2,  // ~1.2m² = 2.4€
+      grande: 1.8    // ~1.8m² = 3.6€
+    }
+    const surfaceArea = sizeMultipliers[size] ?? 1.2
+    const basePricePerM2 = 2 // 2€/m² selon rules
+    const windowBasePrice = basePricePerM2 * surfaceArea
+
     // Nouveau système : nettoyage extérieur/intérieur
     const cleaningType = window.cleaningType ?? 'exterieur'
     const cleaningMultiplier = CLEANING_TYPE_MULTIPLIERS[cleaningType] ?? 1
-    
-    // Service type (nouveau/entretien/récent)
-    const serviceMultiplier = calculateServiceMultiplier(window.serviceType || 'nouveau-client')
-    
-    // Accessibilité 
+
+    // Service type (nouveau/entretien/récent) - logique entretien récent gérée séparément
+    let serviceMultiplier = calculateServiceMultiplier(window.serviceType || 'nouveau-client')
+
+    // Logique spécifique entretien récent selon clientType
+    if (window.serviceType === 'entretien-recent') {
+      serviceMultiplier = clientType === 'professionnel' ? 0.80 : 0.85 // -20% pro, -15% particulier
+    }
+
+    // Accessibilité
     const accessibilityCost = calculateAccessibilityCost(window.accessibility || 'rdc')
-    
+
     // Zone géographique
     const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
-    
+
     // Calcul prix unitaire
-    let unitPrice = basePrice
-    unitPrice *= sizeMultiplier        // Taille fenêtre
+    let unitPrice = windowBasePrice
     unitPrice *= serviceMultiplier     // Type de service (nouveau/entretien)
     unitPrice *= cleaningMultiplier    // Extérieur vs Ext+Int
-    unitPrice += accessibilityCost     // Coût accessibilité 
+    unitPrice += accessibilityCost     // Coût accessibilité
     unitPrice += zoneSurcharge         // Supplément zone
 
-    // Prix total avant remises
+    // Prix total avant frais fixes et remises
     let totalPrice = unitPrice * quantity
+
+    // Frais fixes de 8€ par devis selon les règles métier
+    const fixedFees = 8
+    totalPrice += fixedFees
 
     // Remise client professionnel
     const clientMultiplier = CLIENT_MULTIPLIERS[clientType]
     totalPrice *= clientMultiplier
+
+    // Application des minimums de facturation selon les règles métier
+    const minimumBilling = clientType === 'professionnel' ? 80 : 50
+    totalPrice = Math.max(totalPrice, minimumBilling)
 
     return totalPrice.toFixed(2)
   }
