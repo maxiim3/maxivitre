@@ -78,9 +78,9 @@ export const ACCESSIBILITY_COSTS = {
 }
 
 export const SERVICE_MULTIPLIERS = {
-  'nouveau-client': 0.85, // -15% pour nouveau client (promotion acquisition)
+  'nouveau-client': 0.75, // -25% pour nouveau client (promotion acquisition selon rules)
   'entretien-standard': 1, // Tarif normal
-  'entretien-recent': 1 // Tarif normal
+  'entretien-recent': 0.85 // -15% particuliers ou -20% pros (géré dans logique métier)
 }
 
 export const WINDOW_SIZE_MULTIPLIERS = {
