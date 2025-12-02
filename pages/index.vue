@@ -21,20 +21,20 @@
           <TheLogo class="w-32 mx-auto mb-8 fill-primary drop-shadow-2xl" />
           <h1 class="mb-5 text-6xl font-bold uppercase tracking-wider">MAXIVITRE</h1>
           <p class="mb-8 text-2xl text-primary font-medium">
-            Spécialiste nettoyage extérieur pour commerces • Castelnau-le-Lez
+            {{ businessRules.business.specialization }} • {{ businessRules.business.location }}
           </p>
           <p class="mb-10 text-lg opacity-90">
             Vitrine impeccable = plus de clients ! Intervention flexible weekend, horaires adaptés à votre activité.
-            <strong class="text-primary">-25% sur votre première intervention.</strong>
+            <strong class="text-primary">-{{ businessRules.discounts.newClient * 100 }}% sur votre première intervention.</strong>
           </p>
           <div class="flex gap-4 justify-center flex-wrap">
             <NuxtLink to="/devis" class="btn btn-primary btn-lg px-8">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              🎁 Première intervention -25%
+              🎁 Première intervention -{{ businessRules.discounts.newClient * 100 }}%
             </NuxtLink>
-            <a href="tel:+33778818583" class="btn btn-outline btn-lg px-8 text-white border-white hover:bg-white hover:text-secondary">
+            <a :href="`tel:${businessRules.business.phone}`" class="btn btn-outline btn-lg px-8 text-white border-white hover:bg-white hover:text-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
@@ -55,7 +55,7 @@
       <div class="container mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Nos Services</h2>
         <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
-          Spécialiste nettoyage <strong>extérieur uniquement</strong> • Priorité commerces Castelnau-le-Lez
+          {{ businessRules.business.specialization.split('pour commerces')[0] }}<strong>extérieur uniquement</strong> • Priorité commerces {{ businessRules.business.location }}
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Service 1 - Particuliers -->
@@ -162,7 +162,7 @@
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-2">Rapidité</h3>
-            <p class="opacity-80">Intervention sous 48h selon disponibilité</p>
+            <p class="opacity-80">Intervention sous {{ businessRules.constraints.interventionDelay }}h selon disponibilité</p>
           </div>
           <div class="text-center">
             <div class="bg-primary/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -181,7 +181,7 @@
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-2">Local</h3>
-            <p class="opacity-80">Entreprise basée à Castelnau-le-Lez</p>
+            <p class="opacity-80">Entreprise basée à {{ businessRules.business.location }}</p>
           </div>
         </div>
       </div>
@@ -192,7 +192,7 @@
       <div class="container mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-4 text-secondary">Zones d'Intervention & Tarifs</h2>
         <p class="text-center text-lg mb-12 max-w-2xl mx-auto">
-          Tarification transparente selon la distance depuis Castelnau-le-Lez
+          Tarification transparente depuis {{ businessRules.business.location }}
         </p>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
           <div>
@@ -202,10 +202,10 @@
                 <!-- Zone 1 -->
                 <div class="p-4 bg-primary/10 rounded-xl border-l-4 border-primary">
                   <div class="flex justify-between items-center mb-2">
-                    <h4 class="font-bold text-lg text-primary">Zone 1 - Castelnau-le-Lez</h4>
+                    <h4 class="font-bold text-lg text-primary">Zone 1 - {{ businessRules.serviceAreas.zone1[0] }}</h4>
                     <div class="badge badge-primary">Déplacement OFFERT</div>
                   </div>
-                  <p class="text-xs text-gray-500 mb-3">Frais fixes seulement + prestation</p>
+                  <p class="text-xs text-gray-500 mb-3">Frais fixes {{ businessRules.constraints.fixedFees }}€ + prestation</p>
                 </div>
                 
                 <!-- Zone 2 -->
@@ -214,20 +214,18 @@
                     <h4 class="font-bold text-lg text-secondary">Zone 2 - Communes limitrophes</h4>
                   </div>
                   <div class="text-sm space-y-1 mb-2">
-                    <div class="flex items-center gap-2">
+                    <div
+                      v-for="city in businessRules.serviceAreas.zone2"
+                      :key="city"
+                      class="flex items-center gap-2"
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Le Crès, Jacou</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>Montpellier Pompignane, Millénaire, Aiguelongue</span>
+                      <span>{{ city }}</span>
                     </div>
                   </div>
-                  <p class="text-xs text-gray-500 mb-3">Frais fixes 8€ + déplacement 10€ + prestation</p>
+                  <p class="text-xs text-gray-500 mb-3">Frais fixes {{ businessRules.constraints.fixedFees }}€ + déplacement {{ businessRules.zones.zone2 }}€ + prestation</p>
                 </div>
 
                 <!-- Zone 3 -->
@@ -236,20 +234,18 @@
                     <h4 class="font-bold text-lg text-accent">Zone 3 - Secteur étendu</h4>
                   </div>
                   <div class="text-sm space-y-1 mb-2">
-                    <div class="flex items-center gap-2">
+                    <div
+                      v-for="city in businessRules.serviceAreas.zone3"
+                      :key="city"
+                      class="flex items-center gap-2"
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Clapiers, Vendargues</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>Montpellier Facultés, Antigone, Port-Marianne, Ecusson</span>
+                      <span>{{ city }}</span>
                     </div>
                   </div>
-                  <p class="text-xs text-gray-500 mb-3">Frais fixes 8€ + déplacement 15€ + prestation</p>
+                  <p class="text-xs text-gray-500 mb-3">Frais fixes {{ businessRules.constraints.fixedFees }}€ + déplacement {{ businessRules.zones.zone3 }}€ + prestation</p>
                 </div>
               </div>
               
@@ -280,7 +276,7 @@
                   </svg>
                   <div>
                     <p class="text-sm font-bold text-secondary">MaxiVitre</p>
-                    <p class="text-xs text-gray-600">Castelnau-le-Lez</p>
+                    <p class="text-xs text-gray-600">{{ businessRules.business.location }}</p>
                   </div>
                 </div>
               </div>
@@ -359,17 +355,17 @@
       <div class="absolute inset-0 bg-secondary/90 -z-5"></div>
       <div class="container mx-auto px-4 relative z-10">
         <div class="text-center text-white max-w-3xl mx-auto">
-          <h2 class="text-4xl font-bold mb-4 text-primary">Commerces de Castelnau-le-Lez</h2>
+          <h2 class="text-4xl font-bold mb-4 text-primary">Commerces de {{ businessRules.business.location }}</h2>
           <p class="text-xl mb-8 opacity-90">
-            Vitrine impeccable = plus de clients ! <strong>-25% sur votre première intervention.</strong>
+            Vitrine impeccable = plus de clients ! <strong>-{{ businessRules.discounts.newClient * 100 }}% sur votre première intervention.</strong>
             Intervention weekend, sans perturber votre activité.
           </p>
           <div class="flex gap-4 justify-center flex-wrap">
             <NuxtLink to="/devis" class="btn btn-primary btn-lg px-8">
-              🎁 Offre Découverte -25%
+              🎁 Offre Découverte -{{ businessRules.discounts.newClient * 100 }}%
             </NuxtLink>
-            <a href="tel:+33778818583" class="btn btn-outline btn-lg px-8 text-white border-white hover:bg-white hover:text-secondary">
-              📞 07 78 81 85 83
+            <a :href="`tel:${businessRules.business.phone}`" class="btn btn-outline btn-lg px-8 text-white border-white hover:bg-white hover:text-secondary">
+              📞 {{ businessRules.business.phoneFormatted }}
             </a>
           </div>
           <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -378,14 +374,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               <p class="font-bold">Email</p>
-              <p class="text-sm opacity-80">contact@maxivitre.fr</p>
+              <p class="text-sm opacity-80">{{ businessRules.business.email }}</p>
             </div>
             <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <p class="font-bold">Horaires</p>
-              <p class="text-sm opacity-80">Lun-Sam : 8h-19h</p>
+              <p class="text-sm opacity-80">{{ businessRules.business.hours }}</p>
             </div>
             <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -393,7 +389,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <p class="font-bold">Zone</p>
-              <p class="text-sm opacity-80">Castelnau-le-Lez</p>
+              <p class="text-sm opacity-80">{{ businessRules.business.location }}</p>
             </div>
           </div>
         </div>
@@ -411,7 +407,7 @@
           <a href="https://facebook.com" target="_blank" class="btn btn-circle btn-lg btn-primary">
             <FacebookLogo />
           </a>
-          <a href="https://wa.me/33778818583" target="_blank" class="btn btn-circle btn-lg btn-primary">
+          <a :href="`https://wa.me/${businessRules.business.whatsapp}`" target="_blank" class="btn btn-circle btn-lg btn-primary">
             <PhoneLogo />
           </a>
         </div>
@@ -423,20 +419,22 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { socialMediaLinks } from '~/utils/socialMedia';
+import { useBusinessRules } from '~/composables/useBusinessRules'
 
 const selectedClientType = ref<'pro' | 'particulier'>('pro')
+const { businessRules } = useBusinessRules()
 
 // SEO et schemas structurés
 const { organizationSchema, localBusinessSchema, servicesSchemas } = useSchemas()
 
 // Meta tags pour le SEO
 useHead({
-  title: 'MaxiVitre - Nettoyage Vitres Professionnel Castelnau-le-Lez | -25% 1ère intervention',
+  title: `MaxiVitre - Nettoyage Vitres Professionnel ${businessRules.business.location} | -${businessRules.discounts.newClient * 100}% 1ère intervention`,
   meta: [
-    { name: 'description', content: 'Spécialiste nettoyage vitres commerces Castelnau-le-Lez. Vitrine impeccable = plus de clients ! Intervention weekend, -25% première fois. ☎️ 07 78 81 85 83' },
-    { name: 'keywords', content: 'nettoyage vitres, Castelnau-le-Lez, commerces, vitrines, professionnel, Montpellier' },
-    { property: 'og:title', content: 'MaxiVitre - Nettoyage Vitres Professionnel Castelnau-le-Lez' },
-    { property: 'og:description', content: 'Spécialiste nettoyage vitres commerces. Vitrine impeccable = plus de clients ! -25% première intervention.' },
+    { name: 'description', content: `${businessRules.business.specialization} ${businessRules.business.location}. Vitrine impeccable = plus de clients ! Intervention weekend, -${businessRules.discounts.newClient * 100}% première fois. ☎️ ${businessRules.business.phoneFormatted}` },
+    { name: 'keywords', content: `nettoyage vitres, ${businessRules.business.location}, commerces, vitrines, professionnel, Montpellier` },
+    { property: 'og:title', content: `MaxiVitre - Nettoyage Vitres Professionnel ${businessRules.business.location}` },
+    { property: 'og:description', content: `Spécialiste nettoyage vitres commerces. Vitrine impeccable = plus de clients ! -${businessRules.discounts.newClient * 100}% première intervention.` },
     { property: 'og:type', content: 'business.business' },
     { property: 'og:locale', content: 'fr_FR' }
   ]
@@ -464,6 +462,12 @@ useHead({
 })
 
 const offers = computed(() => {
+  const newClientDiscount = businessRules.discounts.newClient * 100
+  const loyaltyProDiscount = businessRules.discounts.loyaltyProfessional * 100
+  const loyaltyPartDiscount = businessRules.discounts.loyaltyIndividual * 100
+  const delayPro = businessRules.discounts.loyaltyDelayMonths.professionnel
+  const delayPart = businessRules.discounts.loyaltyDelayMonths.particulier
+
   if (selectedClientType.value === 'pro') {
     return [
       {
@@ -471,7 +475,7 @@ const offers = computed(() => {
         badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-warning' },
         title: 'Offre Découverte',
         titleClass: 'text-warning',
-        discount: '-25%',
+        discount: `-${newClientDiscount}%`,
         discountClass: 'text-warning',
         description: 'Sur votre première intervention',
         features: [
@@ -488,9 +492,9 @@ const offers = computed(() => {
         badge: { text: '💼 RECOMMANDÉ PRO', class: 'badge-primary' },
         title: 'Remise Fidélité',
         titleClass: 'text-primary',
-        discount: '-20%',
+        discount: `-${loyaltyProDiscount}%`,
         discountClass: 'text-primary',
-        description: 'Si intervention <strong>&lt; 2 mois</strong><br>de la précédente',
+        description: `Si intervention <strong>&lt; ${delayPro} mois</strong><br>de la précédente`,
         features: [
           'Intervention programmée',
           'Suivi personnalisé',
@@ -526,7 +530,7 @@ const offers = computed(() => {
         badge: { text: '🎁 NOUVEAU CLIENT', class: 'badge-warning' },
         title: 'Offre Découverte',
         titleClass: 'text-warning',
-        discount: '-25%',
+        discount: `-${newClientDiscount}%`,
         discountClass: 'text-warning',
         description: 'Sur votre première intervention',
         features: [
@@ -543,9 +547,9 @@ const offers = computed(() => {
         badge: { text: '🏠 RECOMMANDÉ', class: 'badge-primary' },
         title: 'Remise Fidélité',
         titleClass: 'text-primary',
-        discount: '-15%',
+        discount: `-${loyaltyPartDiscount}%`,
         discountClass: 'text-primary',
-        description: 'Si intervention <strong>&lt; 6 mois</strong><br>de la précédente',
+        description: `Si intervention <strong>&lt; ${delayPart} mois</strong><br>de la précédente`,
         features: [
           'Service complet',
           'Suivi personnalisé',

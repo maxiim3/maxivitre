@@ -70,10 +70,13 @@ const businessRules = {
   business: {
     name: 'MaxiVitre',
     phone: '+33778818583',
+    phoneFormatted: '07 78 81 85 83',
+    whatsapp: '33778818583',
     email: 'contact@maxivitre.fr',
     website: 'https://maxivitre.fr',
     specialization: 'Spécialiste nettoyage extérieur pour commerces',
-    location: 'Castelnau-le-Lez'
+    location: 'Castelnau-le-Lez',
+    hours: 'Lun-Sam : 8h-19h'
   },
   
   // Contraintes
@@ -83,7 +86,9 @@ const businessRules = {
     exportDelay: 1500,
     quoteValidityDays: 30,
     depositThreshold: 500,
-    depositPercentage: 0.30
+    depositPercentage: 0.30,
+    interventionDelay: 48,
+    fixedFees: 8
   }
 } as const
 
