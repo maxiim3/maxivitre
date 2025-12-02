@@ -1,6 +1,6 @@
 export type ClientType = 'particulier' | 'professionnel'
 export type ServiceType = 'nouveau-client' | 'entretien-standard' | 'entretien-recent'
-export type AccessibilityLevel = 'rdc' | 'etage' | 'hauteur' | 'nacelle'
+export type AccessibilityLevel = 'hauteur_homme' | 'echelle'
 export type FrequencyType = 'ponctuel' | 'mensuel' | 'trimestriel' | 'semestriel'
 export type GeographicalZone = 'zone1' | 'zone2' | 'zone3' | 'hors-zone'
 export type WindowSize = 'petite' | 'moyenne' | 'grande'
@@ -70,17 +70,25 @@ export const ZONE_SURCHARGES = {
   'hors-zone': 0 // Sur devis
 }
 
-export const ACCESSIBILITY_COSTS = {
-  rdc: 0,
-  etage: 10,
-  hauteur: 25,
-  nacelle: 50
+// Multiplicateurs d'accessibilité (alignés avec business-rules.config.ts)
+// hauteur_homme: < 3m, accessible depuis le sol (1.0x = tarif normal)
+// echelle: 3-8m, nécessite échelle (+50% = 1.5x)
+export const ACCESSIBILITY_MULTIPLIERS = {
+  hauteur_homme: 1.0,  // Pas de surcharge
+  echelle: 1.5         // +50% de surcharge
 }
 
 export const SERVICE_MULTIPLIERS = {
   'nouveau-client': 0.75, // -25% pour nouveau client (promotion acquisition selon rules)
   'entretien-standard': 1, // Tarif normal
-  'entretien-recent': 0.85 // -15% particuliers ou -20% pros (géré dans logique métier)
+  'entretien-recent': 0.85 // Base rate (voir LOYALTY_MULTIPLIERS pour les taux différenciés)
+}
+
+// Multiplicateurs de fidélité pour service 'entretien-recent'
+// Appliqués selon le type de client (alignés avec business-rules.config.ts)
+export const LOYALTY_MULTIPLIERS = {
+  professionnel: 0.80, // -20% si entretien < 2 mois
+  particulier: 0.85    // -15% si entretien < 6 mois
 }
 
 export const WINDOW_SIZE_MULTIPLIERS = {

@@ -3,20 +3,14 @@
     <h2 class="text-lg font-semibold text-gray-900 mb-4">Type de service</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       
-      <div 
-        v-for="option in serviceOptions" 
+      <div
+        v-for="option in serviceOptions"
         :key="option.id"
         :class="[
           'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
-          selectedService === option.id && option.id === 'nouveau-client'
-            ? 'border-warning bg-warning/5'
-            : selectedService === option.id && option.id === 'entretien-recent' && option.discount.rate > 0
+          selectedService === option.id
             ? 'border-primary bg-primary/5'
-            : selectedService === option.id
-            ? 'border-gray-400 bg-gray-50'
-            : 'border-gray-200 hover:border-gray-300',
-          option.id === 'nouveau-client' ? 'border-warning/30 shadow-warning/20' : '',
-          option.id === 'entretien-recent' && option.discount.rate > 0 ? 'border-primary/30 shadow-primary/20' : ''
+            : 'border-gray-200 hover:border-gray-300'
         ]"
         @click="selectService(option.id)"
       >
@@ -63,28 +57,6 @@
             </div>
           </div>
         </div>
-        
-        <!-- Badge discount pour nouveau client -->
-        <div 
-          v-if="option.id === 'nouveau-client'" 
-          class="absolute -top-2 -right-2 badge badge-warning text-xs font-medium"
-        >
-          -{{ option.discount.percentage }}%
-        </div>
-        
-        <!-- Badge fidélité pour entretien récent -->
-        <div 
-          v-if="option.id === 'entretien-recent' && option.discount.rate > 0" 
-          class="absolute -top-2 -right-2 badge badge-primary text-xs font-medium"
-        >
-          -{{ option.discount.percentage }}%
-        </div>
-        <div 
-          v-else-if="option.id === 'entretien-recent'" 
-          class="absolute -top-2 -right-2 badge badge-primary text-xs font-medium"
-        >
-          Fidélité
-        </div>
       </div>
     </div>
   </div>
@@ -92,6 +64,7 @@
 
 <script setup lang="ts">
 import type { ServiceType, ClientType } from '~/types/Windows.types'
+import { useBusinessRules } from '~/composables/useBusinessRules'
 
 const props = defineProps<{
   modelValue: ServiceType

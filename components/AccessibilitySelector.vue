@@ -15,9 +15,9 @@
         @click="selectAccessibility(option.id)"
       >
         <!-- Badge surcoût si applicable -->
-        <div 
+        <div
           v-if="option.multiplier > 1"
-          class="absolute -top-2 -right-2 bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded-full"
+          class="absolute -top-2 -right-2 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded-full"
         >
           +{{ Math.round((option.multiplier - 1) * 100) }}%
         </div>
@@ -78,6 +78,7 @@
 
 <script setup lang="ts">
 import type { AccessibilityLevel } from '~/types/Windows.types'
+import { useBusinessRules } from '~/composables/useBusinessRules'
 
 const props = defineProps<{
   modelValue: AccessibilityLevel

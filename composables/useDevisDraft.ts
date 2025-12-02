@@ -1,4 +1,15 @@
-import type { WindowSelection, ClientType, ServiceType, GeographicalZone, FrequencyType, ServiceOptions } from '~/types/Windows.types'
+import type { WindowSelection, ClientType, ServiceType, GeographicalZone, FrequencyType, ServiceOptions, AccessibilityLevel } from '~/types/Windows.types'
+
+// Migration des anciennes valeurs d'accessibilité vers le nouveau système
+const migrateAccessibility = (value: string): AccessibilityLevel => {
+  const mapping: Record<string, AccessibilityLevel> = {
+    'rdc': 'hauteur_homme',
+    'etage': 'echelle',
+    'hauteur': 'echelle',
+    'nacelle': 'echelle'
+  }
+  return (mapping[value] as AccessibilityLevel) || 'hauteur_homme'
+}
 
 interface DevisDraft {
   id: string
@@ -44,7 +55,19 @@ export const useDevisDraft = () => {
   const loadDraft = (): DevisDraft | null => {
     if (process.client) {
       const stored = localStorage.getItem(DRAFT_KEY)
-      return stored ? JSON.parse(stored) : null
+      if (!stored) return null
+
+      const draft: DevisDraft = JSON.parse(stored)
+
+      // Migration: Convertir les anciennes valeurs d'accessibilité
+      if (draft.selectedWindows && draft.selectedWindows.length > 0) {
+        draft.selectedWindows = draft.selectedWindows.map(window => ({
+          ...window,
+          accessibility: migrateAccessibility(window.accessibility)
+        }))
+      }
+
+      return draft
     }
     return null
   }
@@ -61,7 +84,17 @@ export const useDevisDraft = () => {
   // Load specific draft by ID
   const loadDraftById = (id: string): DevisDraft | null => {
     const drafts = getDraftsList()
-    return drafts.find(draft => draft.id === id) || null
+    const draft = drafts.find(draft => draft.id === id) || null
+
+    // Migration: Convertir les anciennes valeurs d'accessibilité
+    if (draft && draft.selectedWindows && draft.selectedWindows.length > 0) {
+      draft.selectedWindows = draft.selectedWindows.map(window => ({
+        ...window,
+        accessibility: migrateAccessibility(window.accessibility)
+      }))
+    }
+
+    return draft
   }
 
   // Delete draft

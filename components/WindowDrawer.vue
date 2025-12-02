@@ -316,22 +316,22 @@ const selectedWindowId = ref('')
 const selectedSize = ref<WindowSize>('moyenne')
 const selectedCleaningType = ref<CleaningType>('exterieur')
 const quantity = ref(1)
-const accessibility = ref<AccessibilityLevel>('rdc')
+const accessibility = ref<AccessibilityLevel>('hauteur_homme')
 
-// Options d'accessibilité
+// Options d'accessibilité (alignées avec business-rules.config.ts)
 const accessibilityOptions = [
-  { 
-    value: 'rdc', 
-    label: 'Accès facile', 
+  {
+    value: 'hauteur_homme',
+    label: 'Accès facile',
     icon: '🏠',
-    description: 'Rez-de-chaussée, balcon accessible',
+    description: 'Accessible depuis le sol (< 3m)',
     surcharge: 'Tarif standard'
   },
-  { 
-    value: 'etage', 
-    label: 'Accès difficile', 
-    icon: '⛰️',
-    description: 'Étage élevé, échelle nécessaire',
+  {
+    value: 'echelle',
+    label: 'Échelle requise',
+    icon: '🪜',
+    description: 'Nécessite échelle (3-8m)',
     surcharge: 'Majoration +50%'
   }
 ]
@@ -341,15 +341,15 @@ const windowPricing = useWindowPricing()
 
 const estimatedPrice = computed(() => {
   if (!selectedWindow.value) return '0'
-  
+
   const basePrice = selectedWindow.value.basePrice
   const sizeMultiplier = selectedSize.value === 'petite' ? 0.8 : selectedSize.value === 'grande' ? 1.5 : 1
   const cleaningMultiplier = selectedCleaningType.value === 'exterieur-interieur' ? 1.8 : 1
-  const accessibilityCost = windowPricing.calculateAccessibilityCost(accessibility.value)
-  
-  const unitPrice = (basePrice * sizeMultiplier * cleaningMultiplier) + accessibilityCost
+  const accessibilityMultiplier = windowPricing.calculateAccessibilityMultiplier(accessibility.value)
+
+  const unitPrice = basePrice * sizeMultiplier * cleaningMultiplier * accessibilityMultiplier
   const totalPrice = unitPrice * quantity.value
-  
+
   return totalPrice.toFixed(2)
 })
 
@@ -389,7 +389,7 @@ const addWindow = () => {
   selectedSize.value = 'moyenne'
   selectedCleaningType.value = 'exterieur'
   quantity.value = 1
-  accessibility.value = 'rdc'
+  accessibility.value = 'hauteur_homme'
   
   closeDrawer()
 }
@@ -402,7 +402,7 @@ watch(() => props.editingWindow, (editingWindow) => {
     selectedSize.value = (editingWindow as any).size || 'moyenne'
     selectedCleaningType.value = (editingWindow as any).cleaningType || 'exterieur'
     quantity.value = (editingWindow as any).quantity || 1
-    accessibility.value = (editingWindow as any).accessibility || 'rdc'
+    accessibility.value = (editingWindow as any).accessibility || 'hauteur_homme'
   }
 }, { immediate: true })
 
@@ -414,7 +414,7 @@ watch(() => props.isOpen, (isOpen) => {
     selectedSize.value = 'moyenne'
     selectedCleaningType.value = 'exterieur'
     quantity.value = 1
-    accessibility.value = 'rdc'
+    accessibility.value = 'hauteur_homme'
   }
 })
 </script>

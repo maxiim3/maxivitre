@@ -1,10 +1,11 @@
-import { 
+import {
   DIRTINESS_LEVELS,
   CLIENT_MULTIPLIERS,
   FREQUENCY_DISCOUNTS,
   ZONE_SURCHARGES,
-  ACCESSIBILITY_COSTS,
+  ACCESSIBILITY_MULTIPLIERS,
   SERVICE_MULTIPLIERS,
+  LOYALTY_MULTIPLIERS,
   WINDOW_SIZE_MULTIPLIERS,
   CLEANING_TYPE_MULTIPLIERS
 } from '~/types/Windows.types'
@@ -22,16 +23,14 @@ export const useWindowPricing = () => {
 
   const getAccessibilityCategory = (accessibility: string) => {
     const labels = {
-      rdc: 'Rez-de-chaussée',
-      etage: 'Étage (échelle)',
-      hauteur: 'Grande hauteur',
-      nacelle: 'Nacelle requise'
+      hauteur_homme: 'Accès facile (< 3m)',
+      echelle: 'Échelle requise (3-8m)'
     }
-    return labels[accessibility as keyof typeof labels] || 'Rez-de-chaussée'
+    return labels[accessibility as keyof typeof labels] || 'Accès facile'
   }
 
-  const calculateAccessibilityCost = (accessibility: string) => {
-    return ACCESSIBILITY_COSTS[accessibility as keyof typeof ACCESSIBILITY_COSTS] || 0
+  const calculateAccessibilityMultiplier = (accessibility: string) => {
+    return ACCESSIBILITY_MULTIPLIERS[accessibility as keyof typeof ACCESSIBILITY_MULTIPLIERS] || 1.0
   }
 
   const calculateServiceMultiplier = (serviceType: string) => {
@@ -56,7 +55,7 @@ export const useWindowPricing = () => {
 
     const quantity = window.quantity ?? 1
 
-    // Système basé sur 2€/m² selon les règles métier
+    // 1. SYSTÈME BASÉ SUR 2€/m² selon les règles métier
     const size = window.size ?? 'moyenne'
     const sizeMultipliers = {
       petite: 0.8,   // ~0.8m² = 1.6€
@@ -67,45 +66,53 @@ export const useWindowPricing = () => {
     const basePricePerM2 = 2 // 2€/m² selon rules
     const windowBasePrice = basePricePerM2 * surfaceArea
 
-    // Nouveau système : nettoyage extérieur/intérieur
+    // 2. MULTIPLICATEURS
+
+    // 2a. Type de nettoyage (extérieur vs extérieur+intérieur)
     const cleaningType = window.cleaningType ?? 'exterieur'
     const cleaningMultiplier = CLEANING_TYPE_MULTIPLIERS[cleaningType] ?? 1
 
-    // Service type (nouveau/entretien/récent) - logique entretien récent gérée séparément
+    // 2b. Type de service - utilise LOYALTY_MULTIPLIERS pour entretien-recent
     let serviceMultiplier = calculateServiceMultiplier(window.serviceType || 'nouveau-client')
-
-    // Logique spécifique entretien récent selon clientType
     if (window.serviceType === 'entretien-recent') {
-      serviceMultiplier = clientType === 'professionnel' ? 0.80 : 0.85 // -20% pro, -15% particulier
+      // ✅ FIX Bug #4: Utilise LOYALTY_MULTIPLIERS au lieu de valeurs hard-codées
+      serviceMultiplier = LOYALTY_MULTIPLIERS[clientType]
     }
 
-    // Accessibilité
-    const accessibilityCost = calculateAccessibilityCost(window.accessibility || 'rdc')
+    // 2c. Accessibilité - ✅ FIX Bug #1: Appliqué comme MULTIPLIER, pas comme coût fixe
+    const accessibilityMultiplier = calculateAccessibilityMultiplier(window.accessibility || 'hauteur_homme')
 
-    // Zone géographique
-    const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
-
-    // Calcul prix unitaire
+    // 3. CALCUL PRIX UNITAIRE avec tous les multipliers
     let unitPrice = windowBasePrice
-    unitPrice *= serviceMultiplier     // Type de service (nouveau/entretien)
-    unitPrice *= cleaningMultiplier    // Extérieur vs Ext+Int
-    unitPrice += accessibilityCost     // Coût accessibilité
-    unitPrice += zoneSurcharge         // Supplément zone
+    unitPrice *= serviceMultiplier        // Type de service
+    unitPrice *= cleaningMultiplier       // Extérieur vs Ext+Int
+    unitPrice *= accessibilityMultiplier  // ✅ Accessibilité comme multiplier (1.0x ou 1.5x)
 
-    // Prix total avant frais fixes et remises
+    // 4. AJOUT SURCHARGE ZONE (coût fixe par fenêtre)
+    const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
+    unitPrice += zoneSurcharge
+
+    // 5. MULTIPLICATION PAR QUANTITÉ
     let totalPrice = unitPrice * quantity
 
-    // Frais fixes de 8€ par devis selon les règles métier
+    // 6. ✅ FIX Bug #2: APPLICATION REMISE FRÉQUENCE (avant frais fixes)
+    const frequency = window.frequency || 'ponctuel'
+    const frequencyDiscount = FREQUENCY_DISCOUNTS[frequency as keyof typeof FREQUENCY_DISCOUNTS] || 0
+    if (frequencyDiscount > 0) {
+      totalPrice *= (1 - frequencyDiscount)
+    }
+
+    // 7. FRAIS FIXES (8€ par devis selon règles métier)
     const fixedFees = 8
     totalPrice += fixedFees
 
-    // Remise client professionnel
-    const clientMultiplier = CLIENT_MULTIPLIERS[clientType]
-    totalPrice *= clientMultiplier
-
-    // Application des minimums de facturation selon les règles métier
+    // 8. ✅ FIX Bug #3: MINIMUM DE FACTURATION AVANT discount client
     const minimumBilling = clientType === 'professionnel' ? 80 : 50
     totalPrice = Math.max(totalPrice, minimumBilling)
+
+    // 9. ✅ FIX Bug #3: DISCOUNT CLIENT EN DERNIER (après minimum)
+    const clientMultiplier = CLIENT_MULTIPLIERS[clientType]
+    totalPrice *= clientMultiplier
 
     return totalPrice.toFixed(2)
   }
@@ -128,10 +135,11 @@ export const useWindowPricing = () => {
     
     // Coûts additionnels
     const glueCost = calculateGlueCost(gluePercentage)
-    const accessibilityCost = calculateAccessibilityCost(window.accessibility || 'rdc')
+    const accessibilityMultiplier = calculateAccessibilityMultiplier(window.accessibility || 'hauteur_homme')
     const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
-    
-    unitPrice += glueCost + accessibilityCost + zoneSurcharge
+
+    unitPrice *= accessibilityMultiplier
+    unitPrice += glueCost + zoneSurcharge
 
     // Options (pourcentages appliqués sur le prix unitaire)
     const options = window.options || { cleanFrames: false, antiLimescale: false, insideOutside: false, wasteRemoval: false }
@@ -213,7 +221,7 @@ export const useWindowPricing = () => {
     
     // Nouvelles fonctions principales
     getAccessibilityCategory,
-    calculateAccessibilityCost,
+    calculateAccessibilityMultiplier,
     calculateServiceMultiplier,
     calculateZoneSurcharge,
     calculateTotalPrice,

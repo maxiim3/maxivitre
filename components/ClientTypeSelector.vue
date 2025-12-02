@@ -79,6 +79,7 @@
 
 <script setup lang="ts">
 import type { ClientType } from '~/types/Windows.types'
+import { useBusinessRules } from '~/composables/useBusinessRules'
 
 const props = defineProps<{
   modelValue: ClientType
