@@ -1,89 +1,86 @@
-import { 
-  DIRTINESS_LEVELS,
-  CLIENT_MULTIPLIERS,
-  FREQUENCY_DISCOUNTS,
-  ZONE_SURCHARGES,
-  ACCESSIBILITY_COSTS,
-  SERVICE_MULTIPLIERS,
-  WINDOW_SIZE_MULTIPLIERS,
-  CLEANING_TYPE_MULTIPLIERS
-} from '~/types/Windows.types'
-import type { WindowSelection, ClientType, WindowSize, CleaningType } from '~/types/Windows.types'
+/**
+ * Composable de calcul des tarifs pour le système de devis
+ *
+ * Utilise les règles métier centralisées depuis business-rules.config.ts
+ */
+
+import businessRules from '~/business-rules.config'
+import type { WindowSelection, ClientType, WindowSize, CleaningType, AccessibilityLevel, GeographicalZone, ServiceType } from '~/types/Windows.types'
 
 export const useWindowPricing = () => {
-  const getDirtinessMultiplier = (level: number) => {
-    return DIRTINESS_LEVELS[level]?.multiplier ?? 1
+  // ===========================================
+  // FONCTIONS DE CALCUL DES COÛTS
+  // ===========================================
+
+  /**
+   * Calcule le coût d'accessibilité
+   */
+  const calculateAccessibilityCost = (accessibility: AccessibilityLevel): number => {
+    return businessRules.accessibilityCosts[accessibility] ?? 0
   }
 
-  const calculateGlueCost = (percentage: number = 0) => {
-    const MAX_GLUE_COST = 20
-    return Math.round((percentage / 100) * MAX_GLUE_COST * 2) / 2
-  }
+  /**
+   * Calcule le multiplicateur de service selon le type et le client
+   */
+  const calculateServiceMultiplier = (serviceType: ServiceType, clientType: ClientType = 'particulier'): number => {
+    const multiplier = businessRules.serviceMultipliers[serviceType]
 
-  const getAccessibilityCategory = (accessibility: string) => {
-    const labels = {
-      rdc: 'Rez-de-chaussée',
-      etage: 'Étage (échelle)',
-      hauteur: 'Grande hauteur',
-      nacelle: 'Nacelle requise'
+    // Cas spécial entretien-recent : différent selon clientType
+    if (serviceType === 'entretien-recent' && typeof multiplier === 'object') {
+      return multiplier[clientType]
     }
-    return labels[accessibility as keyof typeof labels] || 'Rez-de-chaussée'
+
+    return typeof multiplier === 'number' ? multiplier : 1
   }
 
-  const calculateAccessibilityCost = (accessibility: string) => {
-    return ACCESSIBILITY_COSTS[accessibility as keyof typeof ACCESSIBILITY_COSTS] || 0
+  /**
+   * Calcule le supplément de zone
+   */
+  const calculateZoneSurcharge = (zone: GeographicalZone): number => {
+    return businessRules.zoneSurcharges[zone] ?? 0
   }
 
-  const calculateServiceMultiplier = (serviceType: string) => {
-    return SERVICE_MULTIPLIERS[serviceType as keyof typeof SERVICE_MULTIPLIERS] || 1
+  /**
+   * Calcule le multiplicateur de nettoyage
+   */
+  const calculateCleaningMultiplier = (cleaningType: CleaningType): number => {
+    return businessRules.cleaningTypeMultipliers[cleaningType] ?? 1
   }
 
-  const calculateZoneSurcharge = (zone: string) => {
-    return ZONE_SURCHARGES[zone as keyof typeof ZONE_SURCHARGES] || 0
-  }
+  // ===========================================
+  // CALCUL DE PRIX PRINCIPAL
+  // ===========================================
 
-  const calculateOptionsPrice = (options: any) => {
-    let optionsPrice = 0
-    if (options.cleanFrames) optionsPrice += 0.2 // +20% sera appliqué au total
-    if (options.antiLimescale) optionsPrice += 0.15 // +15% sera appliqué au total
-    if (options.wasteRemoval) optionsPrice += 25 // forfait fixe
-    return optionsPrice
-  }
-
-  // Nouvelle logique de calcul selon les règles métier centralisées
-  const calculateTotalPrice = (window: WindowSelection, clientType: ClientType = 'particulier') => {
+  /**
+   * Calcule le prix total pour une fenêtre (SANS frais fixes)
+   * Les frais fixes sont appliqués une seule fois dans calculateQuoteTotal
+   */
+  const calculateTotalPrice = (window: WindowSelection, clientType: ClientType = 'particulier'): string => {
     if (!window) return '0.00'
 
     const quantity = window.quantity ?? 1
 
-    // Système basé sur 2€/m² selon les règles métier
-    const size = window.size ?? 'moyenne'
-    const sizeMultipliers = {
-      petite: 0.8,   // ~0.8m² = 1.6€
-      moyenne: 1.2,  // ~1.2m² = 2.4€
-      grande: 1.8    // ~1.8m² = 3.6€
-    }
-    const surfaceArea = sizeMultipliers[size] ?? 1.2
-    const basePricePerM2 = 2 // 2€/m² selon rules
+    // Surface selon la taille de fenêtre
+    const size: WindowSize = window.size ?? 'moyenne'
+    const surfaceArea = businessRules.windowSizeAreas[size] ?? 1.2
+
+    // Prix de base = prix/m² × surface
+    const basePricePerM2 = businessRules.basePricePerSquareMeter
     const windowBasePrice = basePricePerM2 * surfaceArea
 
-    // Nouveau système : nettoyage extérieur/intérieur
-    const cleaningType = window.cleaningType ?? 'exterieur'
-    const cleaningMultiplier = CLEANING_TYPE_MULTIPLIERS[cleaningType] ?? 1
+    // Multiplicateurs
+    const cleaningType: CleaningType = window.cleaningType ?? 'exterieur'
+    const cleaningMultiplier = calculateCleaningMultiplier(cleaningType)
 
-    // Service type (nouveau/entretien/récent) - logique entretien récent gérée séparément
-    let serviceMultiplier = calculateServiceMultiplier(window.serviceType || 'nouveau-client')
+    const serviceType: ServiceType = window.serviceType ?? 'nouveau-client'
+    const serviceMultiplier = calculateServiceMultiplier(serviceType, clientType)
 
-    // Logique spécifique entretien récent selon clientType
-    if (window.serviceType === 'entretien-recent') {
-      serviceMultiplier = clientType === 'professionnel' ? 0.80 : 0.85 // -20% pro, -15% particulier
-    }
+    // Coûts additionnels
+    const accessibility: AccessibilityLevel = window.accessibility ?? 'rdc'
+    const accessibilityCost = calculateAccessibilityCost(accessibility)
 
-    // Accessibilité
-    const accessibilityCost = calculateAccessibilityCost(window.accessibility || 'rdc')
-
-    // Zone géographique
-    const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
+    const zone: GeographicalZone = window.zone ?? 'zone1'
+    const zoneSurcharge = calculateZoneSurcharge(zone)
 
     // Calcul prix unitaire
     let unitPrice = windowBasePrice
@@ -92,141 +89,108 @@ export const useWindowPricing = () => {
     unitPrice += accessibilityCost     // Coût accessibilité
     unitPrice += zoneSurcharge         // Supplément zone
 
-    // Prix total avant frais fixes et remises
-    let totalPrice = unitPrice * quantity
-
-    // Frais fixes de 8€ par devis selon les règles métier
-    const fixedFees = 8
-    totalPrice += fixedFees
-
-    // Remise client professionnel
-    const clientMultiplier = CLIENT_MULTIPLIERS[clientType]
-    totalPrice *= clientMultiplier
-
-    // Application des minimums de facturation selon les règles métier
-    const minimumBilling = clientType === 'professionnel' ? 80 : 50
-    totalPrice = Math.max(totalPrice, minimumBilling)
+    // Prix total pour cette fenêtre (quantité)
+    const totalPrice = unitPrice * quantity
 
     return totalPrice.toFixed(2)
   }
 
-  // Ancienne fonction gardée pour compatibilité temporaire
-  const calculateTotalPriceLegacy = (window: WindowSelection, clientType: ClientType = 'particulier') => {
-    if (!window) return '0.00'
+  /**
+   * Calcule le total du devis avec frais fixes et minimum de facturation
+   */
+  const calculateQuoteTotal = (windows: WindowSelection[], clientType: ClientType = 'particulier'): string => {
+    if (!windows || windows.length === 0) {
+      return '0.00'
+    }
 
-    const basePrice = window.basePrice ?? 0
-    const quantity = window.quantity ?? 1
-    const dirtiness = window.dirtiness ?? 0
-    const gluePercentage = window.gluePercentage ?? 0
-
-    // Calculs de base
-    let unitPrice = basePrice
-    
-    // Application des multiplicateurs
-    unitPrice *= getDirtinessMultiplier(dirtiness)
-    unitPrice *= calculateServiceMultiplier(window.serviceType || 'nouveau-client')
-    
-    // Coûts additionnels
-    const glueCost = calculateGlueCost(gluePercentage)
-    const accessibilityCost = calculateAccessibilityCost(window.accessibility || 'rdc')
-    const zoneSurcharge = calculateZoneSurcharge(window.zone || 'zone1')
-    
-    unitPrice += glueCost + accessibilityCost + zoneSurcharge
-
-    // Options (pourcentages appliqués sur le prix unitaire)
-    const options = window.options || { cleanFrames: false, antiLimescale: false, insideOutside: false, wasteRemoval: false }
-    let optionsMultiplier = 1
-    
-    if (options.cleanFrames) optionsMultiplier += 0.2
-    if (options.antiLimescale) optionsMultiplier += 0.15
-    if (options.insideOutside) optionsMultiplier *= 1.8 // majoration 180%
-    
-    unitPrice *= optionsMultiplier
-    
-    // Forfait évacuation déchets (par intervention, pas par fenêtre)
-    const wasteRemovalCost = options.wasteRemoval ? 25 : 0
-
-    // Prix total avant remises
-    let totalPrice = (unitPrice * quantity) + wasteRemovalCost
-
-    // Remise client type
-    const clientMultiplier = CLIENT_MULTIPLIERS[clientType]
-    totalPrice *= clientMultiplier
-
-    // Remise fréquence (si applicable)
-    const frequency = window.frequency || 'ponctuel'
-    const frequencyDiscount = FREQUENCY_DISCOUNTS[frequency as keyof typeof FREQUENCY_DISCOUNTS] || 0
-    totalPrice *= (1 - frequencyDiscount)
-
-    return totalPrice.toFixed(2)
-  }
-
-  const calculateQuoteTotal = (windows: WindowSelection[], clientType: ClientType = 'particulier') => {
-    const total = windows.reduce((sum, window) => {
+    // Somme des prix de toutes les fenêtres (sans frais fixes)
+    let total = windows.reduce((sum, window) => {
       return sum + parseFloat(calculateTotalPrice(window, clientType))
     }, 0)
+
+    // Frais fixes appliqués UNE SEULE FOIS par devis
+    total += businessRules.fixedFees
+
+    // Application du minimum de facturation
+    const minimumBilling = businessRules.minimumBilling[clientType]
+    total = Math.max(total, minimumBilling)
 
     return total.toFixed(2)
   }
 
-  const getFrequencyLabel = (frequency: string) => {
-    const labels = {
+  // ===========================================
+  // FONCTIONS DE LABELS
+  // ===========================================
+
+  const getAccessibilityCategory = (accessibility: AccessibilityLevel): string => {
+    const labels: Record<AccessibilityLevel, string> = {
+      rdc: 'Rez-de-chaussée',
+      etage: 'Étage (échelle)',
+      hauteur: 'Grande hauteur',
+      nacelle: 'Nacelle requise'
+    }
+    return labels[accessibility] ?? 'Rez-de-chaussée'
+  }
+
+  const getFrequencyLabel = (frequency: string): string => {
+    const labels: Record<string, string> = {
       ponctuel: 'Intervention ponctuelle',
       mensuel: 'Mensuel (-10%)',
       trimestriel: 'Trimestriel (-5%)',
       semestriel: 'Semestriel (-3%)'
     }
-    return labels[frequency as keyof typeof labels] || 'Intervention ponctuelle'
+    return labels[frequency] ?? 'Intervention ponctuelle'
   }
 
-  const getZoneLabel = (zone: string) => {
-    const labels = {
+  const getZoneLabel = (zone: GeographicalZone): string => {
+    const surcharge = businessRules.zoneSurcharges[zone]
+    const labels: Record<GeographicalZone, string> = {
       zone1: 'Castelnau-le-Lez (priorité)',
-      zone2: 'Périphérie proche (+10€)',
-      zone3: 'Périphérie éloignée (+15€)',
+      zone2: `Périphérie proche (+${surcharge}€)`,
+      zone3: `Périphérie éloignée (+${surcharge}€)`,
       'hors-zone': 'Hors zone (sur devis)'
     }
-    return labels[zone as keyof typeof labels] || 'Castelnau-le-Lez'
+    return labels[zone] ?? 'Castelnau-le-Lez'
   }
 
-  const getSizeLabel = (size: WindowSize) => {
-    const labels = {
-      petite: 'Petite (~0.8m²)',
-      moyenne: 'Moyenne (~1.2m²)',
-      grande: 'Grande (~1.8m²)'
+  const getSizeLabel = (size: WindowSize): string => {
+    const area = businessRules.windowSizeAreas[size]
+    const labels: Record<WindowSize, string> = {
+      petite: `Petite (~${area}m²)`,
+      moyenne: `Moyenne (~${area}m²)`,
+      grande: `Grande (~${area}m²)`
     }
-    return labels[size] || 'Moyenne'
+    return labels[size] ?? 'Moyenne'
   }
 
-  const getCleaningTypeLabel = (cleaningType: CleaningType) => {
-    const labels = {
+  const getCleaningTypeLabel = (cleaningType: CleaningType): string => {
+    const multiplier = businessRules.cleaningTypeMultipliers[cleaningType]
+    const percentage = Math.round((multiplier - 1) * 100)
+    const labels: Record<CleaningType, string> = {
       exterieur: 'Extérieur uniquement',
-      'exterieur-interieur': 'Extérieur + Intérieur (+80%)'
+      'exterieur-interieur': `Extérieur + Intérieur (+${percentage}%)`
     }
-    return labels[cleaningType] || 'Extérieur uniquement'
+    return labels[cleaningType] ?? 'Extérieur uniquement'
   }
+
+  // ===========================================
+  // EXPORT
+  // ===========================================
 
   return {
-    // Fonctions existantes
-    getDirtinessMultiplier,
-    calculateGlueCost,
-    
-    // Nouvelles fonctions principales
-    getAccessibilityCategory,
+    // Fonctions de calcul
     calculateAccessibilityCost,
     calculateServiceMultiplier,
     calculateZoneSurcharge,
+    calculateCleaningMultiplier,
     calculateTotalPrice,
     calculateQuoteTotal,
-    
+
     // Fonctions de labelling
+    getAccessibilityCategory,
     getFrequencyLabel,
     getZoneLabel,
     getSizeLabel,
-    getCleaningTypeLabel,
-    
-    // Fonctions utilitaires
-    calculateOptionsPrice,
-    calculateTotalPriceLegacy // Compatibilité temporaire
+    getCleaningTypeLabel
   }
 }
