@@ -241,6 +241,8 @@
       v-model:isOpen="isDrawerOpen"
       :editingWindow="editingWindowIndex !== null ? selectedWindows[editingWindowIndex] : null"
       :isEditing="editingWindowIndex !== null"
+      :serviceType="globalServiceType"
+      :clientType="clientType"
       @select="editingWindowIndex !== null ? updateWindow(editingWindowIndex, $event) : addWindow($event)" />
 
     <!-- Modal de confirmation pour brouillon existant -->

@@ -203,11 +203,11 @@
               <!-- Prix estimé -->
               <div class="bg-gray-50 rounded-lg p-4 mb-6">
                 <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Prix de base + coefficient accessibilité</span>
+                  <span class="text-sm text-gray-600">Prix estimé (hors frais de zone)</span>
                   <span class="text-lg font-semibold text-primary">{{ estimatedPrice }}€</span>
                 </div>
                 <p class="text-xs text-gray-500 mt-1">
-                  Prix final calculé selon type de client et zone
+                  Le supplément zone est appliqué une seule fois par devis
                 </p>
               </div>
             </div>
@@ -237,13 +237,15 @@
 </template>
 
 <script setup lang="ts">
-import type { WindowType, WindowSize, CleaningType, AccessibilityLevel } from '~/types/Windows.types'
+import type { WindowType, WindowSize, CleaningType, AccessibilityLevel, ServiceType, ClientType } from '~/types/Windows.types'
 import businessRules from '~/business-rules.config'
 
 const props = defineProps<{
   isOpen: boolean
   editingWindow?: WindowType | null
   isEditing?: boolean
+  serviceType?: ServiceType
+  clientType?: ClientType
 }>()
 
 const emit = defineEmits<{
@@ -301,7 +303,15 @@ const estimatedPrice = computed(() => {
   const cleaningMultiplier = businessRules.cleaningTypeMultipliers[selectedCleaningType.value] ?? 1
   const accessibilityCost = businessRules.accessibilityCosts[accessibility.value] ?? 0
 
-  const unitPrice = (basePrice * cleaningMultiplier) + accessibilityCost
+  // Multiplicateur de service (avec gestion du cas entretien-recent qui dépend du clientType)
+  const serviceType = props.serviceType ?? 'nouveau-client'
+  const clientType = props.clientType ?? 'particulier'
+  const serviceMultiplierConfig = businessRules.serviceMultipliers[serviceType]
+  const serviceMultiplier = typeof serviceMultiplierConfig === 'object'
+    ? serviceMultiplierConfig[clientType]
+    : (serviceMultiplierConfig ?? 1)
+
+  const unitPrice = (basePrice * serviceMultiplier * cleaningMultiplier) + accessibilityCost
   const totalPrice = unitPrice * quantity.value
 
   return totalPrice.toFixed(2)

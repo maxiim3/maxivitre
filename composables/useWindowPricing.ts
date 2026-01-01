@@ -75,19 +75,16 @@ export const useWindowPricing = () => {
     const serviceType: ServiceType = window.serviceType ?? 'nouveau-client'
     const serviceMultiplier = calculateServiceMultiplier(serviceType, clientType)
 
-    // Coûts additionnels
+    // Coût accessibilité (appliqué par fenêtre)
     const accessibility: AccessibilityLevel = window.accessibility ?? 'rdc'
     const accessibilityCost = calculateAccessibilityCost(accessibility)
-
-    const zone: GeographicalZone = window.zone ?? 'zone1'
-    const zoneSurcharge = calculateZoneSurcharge(zone)
 
     // Calcul prix unitaire
     let unitPrice = windowBasePrice
     unitPrice *= serviceMultiplier     // Type de service (nouveau/entretien)
     unitPrice *= cleaningMultiplier    // Extérieur vs Ext+Int
-    unitPrice += accessibilityCost     // Coût accessibilité
-    unitPrice += zoneSurcharge         // Supplément zone
+    unitPrice += accessibilityCost     // Coût accessibilité (par fenêtre)
+    // Note: zoneSurcharge est appliqué une seule fois par devis dans calculateQuoteTotal()
 
     // Prix total pour cette fenêtre (quantité)
     const totalPrice = unitPrice * quantity
@@ -96,20 +93,24 @@ export const useWindowPricing = () => {
   }
 
   /**
-   * Calcule le total du devis avec frais fixes et minimum de facturation
+   * Calcule le total du devis avec frais fixes, zone et minimum de facturation
    */
   const calculateQuoteTotal = (windows: WindowSelection[], clientType: ClientType = 'particulier'): string => {
     if (!windows || windows.length === 0) {
       return '0.00'
     }
 
-    // Somme des prix de toutes les fenêtres (sans frais fixes)
+    // Somme des prix de toutes les fenêtres (sans frais fixes ni zone)
     let total = windows.reduce((sum, window) => {
       return sum + parseFloat(calculateTotalPrice(window, clientType))
     }, 0)
 
     // Frais fixes appliqués UNE SEULE FOIS par devis
     total += businessRules.fixedFees
+
+    // Supplément zone appliqué UNE SEULE FOIS par devis (basé sur la première fenêtre)
+    const zone: GeographicalZone = windows[0]?.zone ?? 'zone1'
+    total += businessRules.zoneSurcharges[zone] ?? 0
 
     // Application du minimum de facturation
     const minimumBilling = businessRules.minimumBilling[clientType]
