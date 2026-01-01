@@ -323,7 +323,7 @@ const canAdd = computed(() => {
 
 // Synchroniser la sélection
 watch(selectedWindowId, (newId) => {
-  selectedWindow.value = windows.find(w => w.id === newId) || null
+  selectedWindow.value = windows.value.find(w => w.id === newId) || null
 })
 
 const closeDrawer = () => {
