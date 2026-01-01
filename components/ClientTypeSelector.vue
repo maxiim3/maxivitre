@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">Type de client</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <fieldset class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <legend class="text-lg font-semibold text-gray-900 mb-4">Type de client</legend>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" role="radiogroup" aria-label="Sélection du type de client">
       <!-- Particulier -->
       <div 
         :class="[
@@ -74,7 +74,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script setup lang="ts">

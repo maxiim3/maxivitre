@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">Zone géographique</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <fieldset class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <legend class="text-lg font-semibold text-gray-900 mb-4">Zone géographique</legend>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" role="radiogroup" aria-label="Sélection de la zone géographique">
       
       <div 
         v-for="option in zoneOptions" 
@@ -41,9 +41,9 @@
           </div>
           <div class="ml-3 text-sm">
             <label :for="option.id" class="font-medium text-gray-900 cursor-pointer">
-              <span v-if="option.id === 'zone1'">🏠</span>
-              <span v-else-if="option.id === 'zone2'">🏘️</span>
-              <span v-else>🌄</span>
+              <span v-if="option.id === 'zone1'" aria-hidden="true">🏠</span>
+              <span v-else-if="option.id === 'zone2'" aria-hidden="true">🏘️</span>
+              <span v-else aria-hidden="true">🌄</span>
               {{ option.label }}
             </label>
             <p class="text-gray-500 mt-1">
@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script setup lang="ts">
@@ -73,12 +73,10 @@ import type { GeographicalZone } from '~/types/Windows.types'
 
 const props = defineProps<{
   zone: GeographicalZone
-  frequency?: any // Keep for compatibility but unused
 }>()
 
 const emit = defineEmits<{
   'update:zone': [value: GeographicalZone]
-  'update:frequency': [value: any] // Keep for compatibility but unused
 }>()
 
 const { zoneOptions } = useBusinessRules()
