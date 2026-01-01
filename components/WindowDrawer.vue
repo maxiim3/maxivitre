@@ -238,6 +238,7 @@
 
 <script setup lang="ts">
 import type { WindowType, WindowSize, CleaningType, AccessibilityLevel } from '~/types/Windows.types'
+import businessRules from '~/business-rules.config'
 
 const props = defineProps<{
   isOpen: boolean
@@ -250,65 +251,33 @@ const emit = defineEmits<{
   'select': [window: WindowType]
 }>()
 
-// Nouvelles données simplifiées (5 types selon feedback)
-const windows: WindowType[] = [
-  { 
-    id: 'standard', 
-    name: 'Fenêtre standard', 
-    image: '🪟', 
-    basePrice: 8,
-    description: 'Fenêtre classique, battant simple'
-  },
-  { 
-    id: 'plein-pied', 
-    name: 'Fenêtre de plein-pied', 
-    image: '🚪', 
-    basePrice: 8,
-    description: 'Grande fenêtre jusqu\'au sol'
-  },
-  { 
-    id: 'porte-fenetre', 
-    name: 'Porte-fenêtre', 
-    image: '🚪', 
-    basePrice: 8,
-    description: 'Porte-fenêtre à battants'
-  },
-  { 
-    id: 'baie-vitree', 
-    name: 'Baie vitrée', 
-    image: '🏠', 
-    basePrice: 8,
-    description: 'Grande baie coulissante'
-  },
-  { 
-    id: 'fenetre-toit', 
-    name: 'Fenêtre de toit', 
-    image: '🔺', 
-    basePrice: 8,
-    description: 'Vélux, lucarne, etc.'
-  }
-]
+// Données depuis la config centralisée
+const windows = computed(() =>
+  businessRules.windowTypes.map(w => ({
+    ...w,
+    basePrice: businessRules.basePricePerSquareMeter * businessRules.windowSizeAreas.moyenne // Prix de base pour taille moyenne
+  }))
+)
 
-const sizes = [
-  { value: 'petite', label: 'Petite', icon: '⬜', dimensions: '~0.8m²' },
-  { value: 'moyenne', label: 'Moyenne', icon: '◻️', dimensions: '~1.2m²' },
-  { value: 'grande', label: 'Grande', icon: '⬛', dimensions: '~1.8m²' }
-]
+const sizes = computed(() => businessRules.windowSizes)
 
-const cleaningTypes = [
-  { 
-    value: 'exterieur', 
-    label: 'Extérieur uniquement', 
-    description: 'Nettoyage face extérieure seulement',
-    surcharge: null
-  },
-  { 
-    value: 'exterieur-interieur', 
-    label: 'Extérieur + Intérieur', 
-    description: 'Nettoyage des deux faces',
-    surcharge: '+180%'
-  }
-]
+const cleaningTypes = computed(() =>
+  businessRules.cleaningOptions.map(opt => ({
+    ...opt,
+    surcharge: opt.value === 'exterieur-interieur'
+      ? `+${Math.round((businessRules.cleaningTypeMultipliers['exterieur-interieur'] - 1) * 100)}%`
+      : null
+  }))
+)
+
+const accessibilityOptions = computed(() =>
+  businessRules.accessibilityOptionsUI.map(opt => ({
+    ...opt,
+    surcharge: businessRules.accessibilityCosts[opt.value as AccessibilityLevel] > 0
+      ? `+${businessRules.accessibilityCosts[opt.value as AccessibilityLevel]}€`
+      : 'Tarif standard'
+  }))
+)
 
 // État du formulaire
 const selectedWindow = ref<WindowType | null>(null)
@@ -318,38 +287,23 @@ const selectedCleaningType = ref<CleaningType>('exterieur')
 const quantity = ref(1)
 const accessibility = ref<AccessibilityLevel>('rdc')
 
-// Options d'accessibilité
-const accessibilityOptions = [
-  { 
-    value: 'rdc', 
-    label: 'Accès facile', 
-    icon: '🏠',
-    description: 'Rez-de-chaussée, balcon accessible',
-    surcharge: 'Tarif standard'
-  },
-  { 
-    value: 'etage', 
-    label: 'Accès difficile', 
-    icon: '⛰️',
-    description: 'Étage élevé, échelle nécessaire',
-    surcharge: 'Majoration +50%'
-  }
-]
-
 // Calcul prix estimé
 const windowPricing = useWindowPricing()
 
 const estimatedPrice = computed(() => {
   if (!selectedWindow.value) return '0'
-  
-  const basePrice = selectedWindow.value.basePrice
-  const sizeMultiplier = selectedSize.value === 'petite' ? 0.8 : selectedSize.value === 'grande' ? 1.5 : 1
-  const cleaningMultiplier = selectedCleaningType.value === 'exterieur-interieur' ? 1.8 : 1
-  const accessibilityCost = windowPricing.calculateAccessibilityCost(accessibility.value)
-  
-  const unitPrice = (basePrice * sizeMultiplier * cleaningMultiplier) + accessibilityCost
+
+  // Utiliser les constantes de la config
+  const surfaceArea = businessRules.windowSizeAreas[selectedSize.value] ?? 1.2
+  const basePricePerM2 = businessRules.basePricePerSquareMeter
+  const basePrice = basePricePerM2 * surfaceArea
+
+  const cleaningMultiplier = businessRules.cleaningTypeMultipliers[selectedCleaningType.value] ?? 1
+  const accessibilityCost = businessRules.accessibilityCosts[accessibility.value] ?? 0
+
+  const unitPrice = (basePrice * cleaningMultiplier) + accessibilityCost
   const totalPrice = unitPrice * quantity.value
-  
+
   return totalPrice.toFixed(2)
 })
 
