@@ -1,10 +1,11 @@
 /**
  * Composable pour l'accès centralisé aux règles métier
- * 
+ *
  * Fournit un accès réactif et optimisé à business-rules.config.ts
  * avec computed properties pour l'UI et fonctions helper
  */
 
+import { readonly, computed } from 'vue'
 import businessRulesConfig from '~/business-rules.config'
 import type { GeographicalZone, ClientType, ServiceType, AccessibilityLevel } from '~/types/Windows.types'
 
@@ -13,14 +14,16 @@ export const useBusinessRules = () => {
   const businessRules = readonly(businessRulesConfig)
 
   // Options de zones avec données complètes pour UI
-  const zoneOptions = computed(() => 
-    Object.entries(businessRules.zones).map(([zoneId, supplement]) => ({
-      id: zoneId as GeographicalZone,
-      supplement,
-      areas: businessRules.serviceAreas[zoneId as keyof typeof businessRules.serviceAreas] || [],
-      label: getZoneDisplayLabel(zoneId, supplement),
-      description: getZoneDescription(zoneId, supplement)
-    }))
+  const zoneOptions = computed(() =>
+    (Object.entries(businessRules.zoneSurcharges) as [GeographicalZone, number][])
+      .filter(([zoneId]) => zoneId !== 'hors-zone') // Exclure hors-zone de l'UI standard
+      .map(([zoneId, supplement]) => ({
+        id: zoneId,
+        supplement,
+        areas: businessRules.serviceAreas[zoneId as keyof typeof businessRules.serviceAreas] || [],
+        label: getZoneDisplayLabel(zoneId, supplement),
+        description: getZoneDescription(zoneId)
+      }))
   )
 
   // Informations de remises pour affichage
@@ -44,14 +47,17 @@ export const useBusinessRules = () => {
     }
   }))
 
-  // Options d'accessibilité avec multipliers
+  // Options d'accessibilité avec coûts (pour UI)
   const accessibilityOptions = computed(() =>
-    Object.entries(businessRules.accessibility).map(([level, multiplier]) => ({
-      id: level as AccessibilityLevel,
-      multiplier,
-      label: getAccessibilityLabel(level, multiplier),
-      description: getAccessibilityDescription(level, multiplier)
-    }))
+    (Object.entries(businessRules.accessibilityCosts) as [AccessibilityLevel, number][])
+      .filter(([level]) => level === 'rdc' || level === 'etage') // Seuls rdc et etage sont proposés
+      .map(([level, cost]) => ({
+        id: level,
+        cost,
+        label: getAccessibilityLabel(level),
+        description: getAccessibilityDescription(level),
+        surcharge: cost > 0 ? `+${cost}€` : null
+      }))
   )
 
   // Types de services avec remises conditionnelles
@@ -67,8 +73,8 @@ export const useBusinessRules = () => {
       {
         id: 'entretien-recent' as ServiceType,
         label: 'Entretien récent',
-        discount: clientType === 'professionnel' 
-          ? discountInfo.value.loyaltyProfessional 
+        discount: clientType === 'professionnel'
+          ? discountInfo.value.loyaltyProfessional
           : discountInfo.value.loyaltyIndividual,
         description: `Moins de ${getLoyaltyPeriod(clientType)} mois depuis la dernière intervention`,
         priority: 2
@@ -81,57 +87,65 @@ export const useBusinessRules = () => {
         priority: 3
       }
     ]
-    
+
     return options.sort((a, b) => a.priority - b.priority)
   }
 
-  // Fonctions helper pour labels et descriptions
-  function getZoneDisplayLabel(zoneId: string, supplement: number): string {
-    const zoneLabels = {
+  // ===========================================
+  // FONCTIONS HELPER POUR LABELS ET DESCRIPTIONS
+  // ===========================================
+
+  function getZoneDisplayLabel(zoneId: GeographicalZone, supplement: number): string {
+    const zoneNames: Record<GeographicalZone, string> = {
       zone1: 'Zone 1',
-      zone2: 'Zone 2', 
-      zone3: 'Zone 3'
+      zone2: 'Zone 2',
+      zone3: 'Zone 3',
+      'hors-zone': 'Hors zone'
     }
-    
-    const baseLabel = zoneLabels[zoneId as keyof typeof zoneLabels] || zoneId
-    return supplement > 0 ? `${baseLabel} (+${supplement}€)` : `${baseLabel} (GRATUIT)`
+
+    const name = zoneNames[zoneId] || zoneId
+    return supplement > 0 ? `${name} (+${supplement}€)` : `${name} (GRATUIT)`
   }
 
-  function getZoneDescription(zoneId: string, supplement: number): string {
+  function getZoneDescription(zoneId: GeographicalZone): string {
     const areas = businessRules.serviceAreas[zoneId as keyof typeof businessRules.serviceAreas] || []
     return areas.join(', ')
   }
 
-  function getAccessibilityLabel(level: string, multiplier: number): string {
-    const labels = {
-      'hauteur_homme': 'Rez-de-chaussée',
-      'echelle': 'Étage (échelle)'
+  function getAccessibilityLabel(level: AccessibilityLevel): string {
+    const labels: Record<AccessibilityLevel, string> = {
+      rdc: 'Rez-de-chaussée',
+      etage: 'Étage (échelle)',
+      hauteur: 'Grande hauteur',
+      nacelle: 'Nacelle requise'
     }
-    
-    const baseLabel = labels[level as keyof typeof labels] || level
-    return multiplier > 1 ? `${baseLabel} (+${Math.round((multiplier - 1) * 100)}%)` : baseLabel
+    return labels[level] || level
   }
 
-  function getAccessibilityDescription(level: string, multiplier: number): string {
-    const descriptions = {
-      'hauteur_homme': 'Accessible depuis le sol (< 3m)',
-      'echelle': 'Nécessite une échelle (3-8m)'
+  function getAccessibilityDescription(level: AccessibilityLevel): string {
+    const descriptions: Record<AccessibilityLevel, string> = {
+      rdc: 'Accessible depuis le sol (< 3m)',
+      etage: 'Nécessite une échelle (3-8m)',
+      hauteur: 'Grande hauteur (> 8m)',
+      nacelle: 'Nécessite nacelle élévatrice'
     }
-    
-    return descriptions[level as keyof typeof descriptions] || ''
+    return descriptions[level] || ''
   }
 
   function getLoyaltyPeriod(clientType: ClientType): number {
     return businessRules.discounts.loyaltyDelayMonths[clientType]
   }
 
-  // Fonctions de calcul et validation
+  // ===========================================
+  // FONCTIONS DE CALCUL ET VALIDATION
+  // ===========================================
+
   function getServiceDiscount(serviceType: ServiceType, clientType: ClientType): number {
     switch (serviceType) {
       case 'nouveau-client':
         return businessRules.discounts.newClient
       case 'entretien-recent':
-        return clientType === 'professionnel' 
+        return clientType === 'professionnel'
           ? businessRules.discounts.loyaltyProfessional
           : businessRules.discounts.loyaltyIndividual
       case 'entretien-standard':
@@ -146,29 +160,30 @@ export const useBusinessRules = () => {
   }
 
   function getZoneSupplement(zone: GeographicalZone): number {
-    return businessRules.zones[zone] || 0
+    return businessRules.zoneSurcharges[zone] ?? 0
   }
 
   return {
     // Configuration brute
     businessRules,
-    
+
     // Options computed pour UI
     zoneOptions,
     discountInfo,
     accessibilityOptions,
-    
+
     // Fonctions dynamiques
     getServiceOptions,
-    
+
     // Fonctions helper
     getServiceDiscount,
     getZoneLabel,
     getZoneSupplement,
     getLoyaltyPeriod,
-    
+
     // Fonctions de formatage
     getZoneDisplayLabel,
-    getAccessibilityLabel
+    getAccessibilityLabel,
+    getAccessibilityDescription
   }
 }

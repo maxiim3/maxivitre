@@ -1,12 +1,13 @@
-import type { WindowSelection, ClientType, ServiceType, GeographicalZone, FrequencyType, ServiceOptions } from '~/types/Windows.types'
+import type { WindowSelection, ClientType, ServiceType, GeographicalZone, FrequencyType, ServiceOptions, AccessibilityLevel } from '~/types/Windows.types'
 
-interface DevisDraft {
+export interface DevisDraft {
   id: string
   timestamp: number
   clientType: ClientType
   globalServiceType: ServiceType
   globalZone: GeographicalZone
   globalFrequency: FrequencyType
+  globalAccessibility: AccessibilityLevel
   globalOptions: ServiceOptions
   selectedWindows: WindowSelection[]
   customerEmail: string
@@ -122,7 +123,7 @@ export const useDevisDraft = () => {
     return {
       title: `${windowsCount} fenêtre${windowsCount > 1 ? 's' : ''} - ${clientTypeLabel}`,
       subtitle: `Sauvé le ${date}`,
-      step: `Étape ${draft.currentStep + 1}/5`
+      step: `Étape ${draft.currentStep + 1}/3`
     }
   }
 
