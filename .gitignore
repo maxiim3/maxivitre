@@ -1,9 +1,40 @@
+# Dependency directories
 node_modules
+dist
+
+# Logs
 *.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vue.js
 .nuxt
 .nitro
 .cache
 .output
 .data
-.env
 dist
+.env
+.vercel
+
+# IDEs and editors
+.idea
+.vscode
+*.swp
+*.swo
+.vs
+*.sublime-workspace
+*.sublime-project
+.zed
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+.directory
