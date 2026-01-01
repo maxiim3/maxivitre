@@ -3,28 +3,27 @@
     <legend class="text-lg font-semibold text-gray-900 mb-4">Zone géographique</legend>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4" role="radiogroup" aria-label="Sélection de la zone géographique">
       
-      <div 
-        v-for="option in zoneOptions" 
+      <div
+        v-for="option in zoneOptions"
         :key="option.id"
         :class="[
           'relative rounded-lg border-2 p-4 cursor-pointer transition-all',
           selectedZone === option.id
-            ? 'border-primary bg-primary/5' 
-            : 'border-gray-200 hover:border-gray-300',
-          option.id === 'zone1' ? 'ring-2 ring-primary/20' : '' // Priorité zone 1
+            ? 'border-primary bg-primary/5'
+            : 'border-gray-200 hover:border-gray-300'
         ]"
         @click="selectedZone = option.id"
       >
-        <!-- Badge prix -->
-        <div 
+        <!-- Badge prix neutre -->
+        <div
           v-if="option.supplement === 0"
-          class="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full"
+          class="absolute -top-2 -right-2 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded-full"
         >
-          GRATUIT
+          Inclus
         </div>
-        <div 
+        <div
           v-else
-          class="absolute -top-2 -right-2 bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded-full"
+          class="absolute -top-2 -right-2 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded-full"
         >
           +{{ option.supplement }}€
         </div>
@@ -70,6 +69,7 @@
 
 <script setup lang="ts">
 import type { GeographicalZone } from '~/types/Windows.types'
+import { useBusinessRules } from '~/composables/useBusinessRules'
 
 const props = defineProps<{
   zone: GeographicalZone

@@ -32,15 +32,69 @@
               <button @click="openDrawerForAdd()" class="btn btn-primary">Ajouter ma première fenêtre</button>
             </div>
 
-            <div v-else>
-              <div class="py-8 text-center">
-                <div class="mb-2 text-4xl">✅</div>
-                <p class="text-lg font-medium text-gray-900">
-                  {{ selectedWindows.length }} fenêtre{{ selectedWindows.length > 1 ? "s" : "" }} ajoutée{{
-                    selectedWindows.length > 1 ? "s" : ""
-                  }}
-                </p>
-                <p class="mt-2 text-sm text-gray-500">Vos fenêtres sont configurées et prêtes pour le devis</p>
+            <div v-else class="space-y-4">
+              <!-- En-tête avec compteur -->
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="text-sm font-medium text-gray-900">
+                  Fenêtres configurées ({{ selectedWindows.length }})
+                </h4>
+              </div>
+
+              <!-- Liste des fenêtres -->
+              <div class="space-y-3">
+                <div
+                  v-for="(window, index) in selectedWindows"
+                  :key="index"
+                  class="flex items-center justify-between rounded-lg bg-gray-50 p-3 group hover:bg-gray-100 transition-colors"
+                >
+                  <!-- Gauche: Icône + Infos -->
+                  <div class="flex items-center space-x-3 flex-1 min-w-0">
+                    <span class="text-2xl">{{ window.image }}</span>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900 truncate">{{ window.name }}</p>
+                      <p class="text-xs text-gray-500">
+                        Quantité: {{ window.quantity }} •
+                        {{ windowPricing.getSizeLabel(window.size) }} •
+                        {{ windowPricing.getCleaningTypeLabel(window.cleaningType) }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Droite: Prix + Supprimer -->
+                  <div class="flex items-center space-x-4">
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ windowPricing.calculateTotalPrice(window, clientType) }}€
+                    </div>
+                    <button
+                      @click="confirmDelete(index)"
+                      class="btn btn-ghost btn-sm btn-circle text-error hover:bg-error/10"
+                      :aria-label="`Supprimer ${window.name}`"
+                      title="Supprimer cette fenêtre"
+                    >
+                      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Texte d'aide -->
+              <div class="mt-4 flex items-center space-x-2 text-sm text-gray-500">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>Utilisez le bouton "Ajouter une fenêtre" pour configurer d'autres fenêtres</span>
               </div>
             </div>
           </div>
@@ -198,6 +252,16 @@
       cancelText="Recommencer"
       @confirm="loadExistingDraft"
       @cancel="startNewDraft" />
+
+    <!-- Modale de confirmation de suppression -->
+    <ConfirmationModal
+      :isOpen="deleteConfirmIndex !== null"
+      title="Supprimer cette fenêtre ?"
+      message="Êtes-vous sûr de vouloir supprimer cette fenêtre de votre devis ? Cette action est irréversible."
+      confirmText="Supprimer"
+      cancelText="Annuler"
+      @confirm="executeDelete"
+      @cancel="cancelDelete" />
   </div>
 </template>
 
@@ -234,6 +298,7 @@
   const isDrawerOpen = ref(false);
   const customerEmail = ref("");
   const editingWindowIndex = ref<number | null>(null);
+  const deleteConfirmIndex = ref<number | null>(null);
 
   // Modal state
   const showDraftModal = ref(false);
@@ -261,6 +326,21 @@
 
   const removeWindow = (index: number) => {
     selectedWindows.value.splice(index, 1);
+  };
+
+  const confirmDelete = (index: number) => {
+    deleteConfirmIndex.value = index;
+  };
+
+  const cancelDelete = () => {
+    deleteConfirmIndex.value = null;
+  };
+
+  const executeDelete = () => {
+    if (deleteConfirmIndex.value !== null) {
+      removeWindow(deleteConfirmIndex.value);
+      deleteConfirmIndex.value = null;
+    }
   };
 
   const updateWindow = (index: number, window: WindowSelection) => {

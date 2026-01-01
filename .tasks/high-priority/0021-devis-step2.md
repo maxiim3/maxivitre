@@ -87,11 +87,11 @@ Réviser l'étape 2 du système de devis en supprimant temporairement le systèm
 ## Acceptance Criteria
 
 ### Fonctionnel
-- [ ] Le système de panier est complètement supprimé
-- [ ] Les fenêtres configurées s'affichent en liste claire
+- [x] ✅ Le système de panier est complètement supprimé (2025-12-02)
+- [x] ✅ Les fenêtres configurées s'affichent en liste claire (2025-12-02)
 - [ ] Le drawer permet l'édition complète d'une fenêtre
 - [ ] Les modifications de quantité se font en inline avec mise à jour prix
-- [ ] La suppression inline fonctionne avec confirmation
+- [x] ✅ La suppression inline fonctionne avec confirmation (2025-12-02)
 
 ### UX/UI
 - [ ] L'interface est intuitive et ne nécessite pas d'apprentissage
@@ -185,3 +185,94 @@ Drawer ouvert sur la droite avec:
 - Fermeture par X ou échap
 - Responsive mobile (fullscreen)
 ```
+
+---
+
+## Implémentation Partielle (2025-12-02)
+
+### Phase 1 Complétée : Affichage Liste des Fenêtres ✅
+
+**Fichier modifié** : `/pages/devis.vue` (lignes 37-101)
+
+#### Fonctionnalités Implémentées
+
+1. **Liste Interactive des Fenêtres**
+   - Affichage en carte pour chaque fenêtre configurée
+   - Icône emoji du type de fenêtre
+   - Nom et détails (quantité, taille, type de nettoyage)
+   - Prix unitaire calculé et affiché
+   - Compteur total de fenêtres en en-tête
+
+2. **Suppression avec Confirmation**
+   - Bouton poubelle visible au survol
+   - Modal de confirmation avant suppression
+   - Messages clairs ("Êtes-vous sûr ?")
+   - Actions "Annuler" et "Supprimer" dans le modal
+   - État de confirmation géré via `deleteConfirmIndex`
+
+3. **Design et UX**
+   - Cards avec hover state (bg-gray-100)
+   - Bouton suppression en rouge (text-error)
+   - Icône SVG de poubelle accessible
+   - aria-label pour accessibilité
+   - Layout responsive avec Flexbox
+
+#### Code Clé
+
+```typescript
+// État pour la confirmation de suppression
+const deleteConfirmIndex = ref<number | null>(null)
+
+// Fonctions de gestion
+const confirmDelete = (index: number) => {
+  deleteConfirmIndex.value = index
+}
+
+const cancelDelete = () => {
+  deleteConfirmIndex.value = null
+}
+
+const executeDelete = () => {
+  if (deleteConfirmIndex.value !== null) {
+    removeWindow(deleteConfirmIndex.value)
+    deleteConfirmIndex.value = null
+  }
+}
+```
+
+#### Pricing Integration
+- Utilisation de `useWindowPricing().calculateTotalPrice()`
+- Prix calculés en temps réel avec toutes les règles métier
+- Display formaté avec symbole € (ex: "45.00€")
+- Labels lisibles via `getSizeLabel()` et `getCleaningTypeLabel()`
+
+### Phase 2 Restante : Drawer d'Édition ⏳
+
+**À implémenter** :
+- [ ] Composant drawer d'édition réutilisable
+- [ ] Pré-remplissage des valeurs lors de l'édition
+- [ ] Sauvegarde des modifications
+- [ ] Animation d'ouverture/fermeture
+- [ ] Gestion du focus et de l'accessibilité
+
+### Phase 3 Restante : Modification Quantité Inline ⏳
+
+**À implémenter** :
+- [ ] Contrôles +/- pour ajuster la quantité
+- [ ] Mise à jour en temps réel du prix
+- [ ] Validation min/max
+- [ ] Optimisation mobile (touch targets)
+
+### Impact Business
+
+**Ce qui fonctionne maintenant** :
+- ✅ Client voit clairement les fenêtres configurées
+- ✅ Client peut supprimer facilement une fenêtre
+- ✅ Prix mis à jour automatiquement après suppression
+- ✅ Interface claire et professionnelle
+- ✅ Pas de confusion possible (confirmation avant suppression)
+
+**À améliorer avec les phases suivantes** :
+- Édition rapide sans avoir à supprimer/recréer
+- Ajustement quantité sans re-configuration complète
+- Expérience plus fluide pour modifications mineures

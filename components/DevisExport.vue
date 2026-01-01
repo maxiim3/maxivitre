@@ -84,6 +84,11 @@
 
 <script setup lang="ts">
 import type { WindowSelection, ClientType } from '~/types/Windows.types'
+import { usePdfGenerator } from '~/composables/usePdfGenerator'
+import { useBusinessRules } from '~/composables/useBusinessRules'
+
+const pdfGenerator = usePdfGenerator()
+const { businessRules } = useBusinessRules()
 
 const props = defineProps<{
   selectedWindows: WindowSelection[]
@@ -108,24 +113,33 @@ const isValidEmail = computed(() => {
 
 const sendByEmail = async () => {
   if (!isValidEmail.value) return
-  
+
   isSending.value = true
-  
+
   try {
-    // Simulate email sending
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // In real implementation, would call API to send email
-    console.log('Sending devis to:', email.value)
-    
+    // Générer le PDF d'abord
+    await downloadPDF()
+
+    // Préparer le mailto link
+    const subject = encodeURIComponent('Votre devis MaxiVitre')
+    const body = encodeURIComponent(
+      `Bonjour,\n\n` +
+      `Veuillez trouver ci-joint votre devis MaxiVitre.\n\n` +
+      `Montant total: ${props.grandTotal}€\n\n` +
+      `Cordialement,\n` +
+      `L'équipe MaxiVitre\n` +
+      `${businessRules.business.phone}\n` +
+      `${businessRules.business.email}`
+    )
+
+    // Ouvrir le client email
+    window.location.href = `mailto:${email.value}?subject=${subject}&body=${body}`
+
     emit('email-sent', email.value)
-    
-    // Show success message
-    alert(`Devis envoyé à ${email.value} !`)
-    
+
   } catch (error) {
-    console.error('Error sending email:', error)
-    alert('Erreur lors de l\'envoi de l\'email')
+    console.error('Erreur préparation email:', error)
+    alert('Erreur lors de la préparation de l\'email. Le PDF a été téléchargé, veuillez l\'envoyer manuellement.')
   } finally {
     isSending.value = false
   }
@@ -133,27 +147,40 @@ const sendByEmail = async () => {
 
 const downloadPDF = async () => {
   isGenerating.value = true
-  
+
   try {
-    // Simulate PDF generation
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // In real implementation, would generate and download PDF
-    console.log('Generating PDF for devis:', props.grandTotal)
-    
-    // Create a fake download
+    // Générer numéro de devis unique
+    const quoteNumber = `MV-${Date.now().toString().slice(-8)}`
+
+    // Préparer les données
+    const quoteData = {
+      selectedWindows: props.selectedWindows,
+      clientType: props.clientType,
+      grandTotal: props.grandTotal,
+      customerEmail: email.value,
+      quoteDate: new Date(),
+      quoteNumber
+    }
+
+    // Générer le PDF
+    const pdfBytes = await pdfGenerator.generateQuotePDF(quoteData)
+
+    // Télécharger le fichier
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
-    link.href = 'data:application/pdf;base64,JVBERi0xLjQK' // Fake PDF data
-    link.download = `devis-maxivitre-${Date.now()}.pdf`
+    link.href = url
+    link.download = `devis-maxivitre-${quoteNumber}.pdf`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-    
+    window.URL.revokeObjectURL(url)
+
     emit('pdf-downloaded')
-    
+
   } catch (error) {
-    console.error('Error generating PDF:', error)
-    alert('Erreur lors de la génération du PDF')
+    console.error('Erreur génération PDF:', error)
+    alert('Erreur lors de la génération du PDF. Veuillez réessayer.')
   } finally {
     isGenerating.value = false
   }
