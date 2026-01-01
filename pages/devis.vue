@@ -11,9 +11,7 @@
           <ServiceTypeCard v-model="globalServiceType" :clientType="clientType" />
           <ZoneSelector
             :zone="globalZone"
-            :frequency="globalFrequency"
-            @update:zone="globalZone = $event"
-            @update:frequency="globalFrequency = $event" />
+            @update:zone="globalZone = $event" />
           <AccessibilitySelector v-model="globalAccessibility" />
           <!-- OptionsSelector v-model="globalOptions" / -->
           <!-- Options additionnelles temporairement désactivées - hors business rules -->
@@ -214,17 +212,16 @@
     ServiceOptions,
     AccessibilityLevel,
   } from "~/types/Windows.types";
-  import { DIRTINESS_LEVELS } from "~/types/Windows.types";
 
   // Wizard state
   const currentStep = ref(0);
 
   // Global settings
   const clientType = ref<ClientType>("particulier");
-  const globalServiceType = ref<ServiceType>("standard");
+  const globalServiceType = ref<ServiceType>("nouveau-client");
   const globalZone = ref<GeographicalZone>("zone1");
   const globalFrequency = ref<FrequencyType>("ponctuel");
-  const globalAccessibility = ref<AccessibilityLevel>("hauteur_homme");
+  const globalAccessibility = ref<AccessibilityLevel>("rdc");
   const globalOptions = ref<ServiceOptions>({
     cleanFrames: false,
     antiLimescale: false,
@@ -338,36 +335,25 @@
     return windowPricing.getFrequencyLabel(frequency);
   };
 
-  const currentDirtinessLevel = (level: number) => {
-    return DIRTINESS_LEVELS[level] || DIRTINESS_LEVELS[0];
-  };
-
-  const hasGlobalOptions = computed(() => {
-    return Object.values(globalOptions.value).some(option => option === true);
-  });
-
   // Memoized calculations for better performance
   const grandTotal = computed(() => {
     return windowPricing.calculateQuoteTotal(selectedWindows.value, clientType.value);
   });
 
-  const totalWindows = computed(() => selectedWindows.value.length);
-
-  const hasAnyOptions = computed(() => {
-    return selectedWindows.value.some(window => Object.values(window.options).some(option => option === true));
-  });
-
-  // Auto-apply global settings to new windows
+  // Auto-apply global settings to existing windows (immutable update)
   watch(
     [globalServiceType, globalZone, globalFrequency, globalAccessibility, globalOptions],
     () => {
-      selectedWindows.value.forEach(window => {
-        window.serviceType = globalServiceType.value;
-        window.zone = globalZone.value;
-        window.frequency = globalFrequency.value;
-        window.accessibility = globalAccessibility.value;
-        window.options = { ...globalOptions.value };
-      });
+      if (selectedWindows.value.length === 0) return;
+
+      selectedWindows.value = selectedWindows.value.map(window => ({
+        ...window,
+        serviceType: globalServiceType.value,
+        zone: globalZone.value,
+        frequency: globalFrequency.value,
+        accessibility: globalAccessibility.value,
+        options: { ...globalOptions.value },
+      }));
     },
     { deep: true }
   );
@@ -379,7 +365,7 @@
       globalServiceType.value = pendingDraft.globalServiceType;
       globalZone.value = pendingDraft.globalZone;
       globalFrequency.value = pendingDraft.globalFrequency;
-      globalAccessibility.value = pendingDraft.globalAccessibility || "hauteur_homme";
+      globalAccessibility.value = pendingDraft.globalAccessibility || "rdc";
       globalOptions.value = pendingDraft.globalOptions;
       selectedWindows.value = pendingDraft.selectedWindows;
       customerEmail.value = pendingDraft.customerEmail;
@@ -399,7 +385,7 @@
     globalServiceType.value = "nouveau-client";
     globalZone.value = "zone1";
     globalFrequency.value = "ponctuel";
-    globalAccessibility.value = "hauteur_homme";
+    globalAccessibility.value = "rdc";
     globalOptions.value = {
       cleanFrames: false,
       antiLimescale: false,
