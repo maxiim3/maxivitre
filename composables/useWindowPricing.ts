@@ -108,13 +108,13 @@ export const useWindowPricing = () => {
     // Frais fixes appliqués UNE SEULE FOIS par devis
     total += businessRules.fixedFees
 
-    // Supplément zone appliqué UNE SEULE FOIS par devis (basé sur la première fenêtre)
-    const zone: GeographicalZone = windows[0]?.zone ?? 'zone1'
-    total += businessRules.zoneSurcharges[zone] ?? 0
-
-    // Application du minimum de facturation
+    // Application du minimum de facturation AVANT les suppléments de zone
     const minimumBilling = businessRules.minimumBilling[clientType]
     total = Math.max(total, minimumBilling)
+
+    // Supplément zone appliqué APRÈS le minimum (frais de déplacement toujours facturés)
+    const zone: GeographicalZone = windows[0]?.zone ?? 'zone1'
+    total += businessRules.zoneSurcharges[zone] ?? 0
 
     return total.toFixed(2)
   }
