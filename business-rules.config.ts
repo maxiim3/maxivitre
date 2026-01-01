@@ -26,10 +26,10 @@ const businessRules = {
   // Frais fixes par devis (appliqués UNE SEULE FOIS)
   fixedFees: 8, // 8€ par devis
 
-  // Minimum de facturation
+  // Minimum de facturation (35€ pour tous)
   minimumBilling: {
-    particulier: 50,
-    professionnel: 80
+    particulier: 35,
+    professionnel: 35
   } as const,
 
   // ===========================================

@@ -151,8 +151,34 @@
               </div>
             </div>
 
-            <!-- Total -->
+            <!-- Total avec détail -->
             <div class="mt-6 border-t pt-6">
+              <!-- Détail du calcul -->
+              <div class="space-y-2 text-sm mb-4">
+                <div class="flex justify-between text-gray-600">
+                  <span>Sous-total fenêtres</span>
+                  <span>{{ priceBreakdown.windowsTotal.toFixed(2) }}€</span>
+                </div>
+                <div class="flex justify-between text-gray-600">
+                  <span>Frais fixes</span>
+                  <span>{{ priceBreakdown.fixedFees.toFixed(2) }}€</span>
+                </div>
+                <div v-if="priceBreakdown.minimumApplied" class="flex justify-between text-amber-600 font-medium">
+                  <span>Minimum de facturation appliqué</span>
+                  <span>{{ priceBreakdown.minimumAmount.toFixed(2) }}€</span>
+                </div>
+                <div v-if="priceBreakdown.zone > 0" class="flex justify-between text-gray-600">
+                  <span>Supplément zone ({{ priceBreakdown.zoneLabel }})</span>
+                  <span>+{{ priceBreakdown.zone.toFixed(2) }}€</span>
+                </div>
+              </div>
+
+              <!-- Note sur le minimum -->
+              <p v-if="priceBreakdown.minimumApplied" class="text-xs text-amber-600 mb-4">
+                Toute prestation inférieure à 35€ est facturée au minimum de 35€.
+              </p>
+
+              <!-- Total -->
               <div class="rounded-lg bg-primary/5 p-4">
                 <div class="flex items-center justify-between">
                   <div>
@@ -420,6 +446,37 @@
   // Memoized calculations for better performance
   const grandTotal = computed(() => {
     return windowPricing.calculateQuoteTotal(selectedWindows.value, clientType.value);
+  });
+
+  // Breakdown for transparency
+  const priceBreakdown = computed(() => {
+    const windows = selectedWindows.value;
+    if (!windows || windows.length === 0) {
+      return { windowsTotal: 0, fixedFees: 0, subtotal: 0, minimumApplied: false, minimumAmount: 0, zone: 0, zoneLabel: '', total: 0 };
+    }
+
+    // Sum of all windows
+    const windowsTotal = windows.reduce((sum, w) => {
+      return sum + parseFloat(windowPricing.calculateTotalPrice(w, clientType.value));
+    }, 0);
+
+    const fixedFees = 8; // from business rules
+    const subtotal = windowsTotal + fixedFees;
+
+    // Minimum billing
+    const minimumAmount = 35; // from business rules (now same for all)
+    const minimumApplied = subtotal < minimumAmount;
+    const afterMinimum = Math.max(subtotal, minimumAmount);
+
+    // Zone surcharge
+    const zoneKey = windows[0]?.zone ?? 'zone1';
+    const zoneSurcharges: Record<string, number> = { zone1: 0, zone2: 10, zone3: 15, 'hors-zone': 0 };
+    const zone = zoneSurcharges[zoneKey] ?? 0;
+    const zoneLabel = zoneKey === 'zone1' ? '' : zoneKey === 'zone2' ? 'Périphérie proche' : zoneKey === 'zone3' ? 'Périphérie éloignée' : '';
+
+    const total = afterMinimum + zone;
+
+    return { windowsTotal, fixedFees, subtotal, minimumApplied, minimumAmount, zone, zoneLabel, total };
   });
 
   // Auto-apply global settings to existing windows (immutable update)
